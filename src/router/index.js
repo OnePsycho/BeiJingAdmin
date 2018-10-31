@@ -21,9 +21,9 @@ export default new Router({
                     meta: { title: '用户管理' }
                 },
                 {
-                    path: '/classify',
-                    component: resolve => require(['../components/page/BaseClassify.vue'], resolve),
-                    meta: { title: '分类管理' }
+                    path: '/admin',
+                    component: resolve => require(['../components/page/BaseAdmin.vue'], resolve),
+                    meta: { title: '管理员管理' }
                 },{
                     path: '/area',
                     component: resolve => require(['../components/page/BaseArea.vue'], resolve),

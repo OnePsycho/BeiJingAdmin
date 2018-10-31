@@ -4,7 +4,7 @@
         <div class="collapse-btn" @click="collapseChage">
             <i class="el-icon-menu" style="font-size: 25px;"></i>
         </div>
-        <div class="logo">积分商城后台管理系统</div>
+        <div class="logo">北工设计后台管理系统</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->

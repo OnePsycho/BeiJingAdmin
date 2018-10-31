@@ -38,35 +38,30 @@ export default {
     return {
       collapse: false,
       items: [
-        // {
-        //   icon: "el-icon-menu",
-        //   index: "classify",
-        //   title: "分类管理"
-        // },
-        // {
-        //   icon: "el-icon-goods",
-        //   index: "area",
-        //   title: "专区管理"
-        // },
-        // {
-        //   icon: "el-icon-picture-outline",
-        //   index: "slider",
-        //   title: "轮播管理"
-        // },
-        // {
-        //   icon: "el-icon-lx-shop",
-        //   index: "table",
-        //   title: "商品管理"
-        // },
-        // {
-        //   icon: "el-icon-tickets",
-        //   index: "exchange",
-        //   title: "兑换管理"
-        // },
         {
           icon: "el-icon-tickets",
           index: "user",
           title: "用户管理"
+        },
+        {
+          icon: "el-icon-tickets",
+          index: "admin",
+          title: "管理员管理"
+        },
+        {
+          icon: "el-icon-tickets",
+          index: "classify",
+          title: "分类管理"
+        },
+        {
+          icon: "el-icon-tickets",
+          index: "question",
+          title: "问题管理"
+        },
+        {
+          icon: "el-icon-tickets",
+          index: "award",
+          title: "赏金管理"
         }
       ]
     };

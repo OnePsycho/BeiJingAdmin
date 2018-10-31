@@ -3,7 +3,7 @@
 		<div class="crumbs">
 			<el-breadcrumb separator="/">
 				<el-breadcrumb-item>
-					<i class="el-icon-tickets"></i>  用户管理</el-breadcrumb-item>
+					<i class="el-icon-tickets"></i>  管理员管理</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
 		<div class="container">
