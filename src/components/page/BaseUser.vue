@@ -23,26 +23,27 @@
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
-				<el-table-column prop="exchange_order_id" label="编号"  align="center" width="80">
+				<el-table-column prop="id" label="编号"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="order_code" label="用户名"  align="center">
+				<el-table-column prop="username" label="用户名"  align="center">
 				</el-table-column>
-				<el-table-column prop="product_name" label="手机号"  align="center">
+				<el-table-column prop="phoneNum" label="手机号"  align="center">
 				</el-table-column>
-				<el-table-column prop="end_time" label="邮箱地址"  sortable align="center">
+				<el-table-column prop="email" label="邮箱地址"  sortable align="center">
 				</el-table-column>
-				<el-table-column prop="ticket_code" label="身份"  align="center">
+				<el-table-column prop="type" label="身份"  align="center">
 				</el-table-column>
-				<el-table-column prop="member_nickname" label="状态"  align="center">
+				<el-table-column prop="status" label="状态"  align="center">
 				</el-table-column>
 				<el-table-column prop="phone" label="注册时间"   align="center">
 				</el-table-column>
-				<el-table-column label="操作" align="center" width="220px">
+				<el-table-column label="操作" align="center" width="500px">
 					<template slot-scope="scope">
-						<el-button type="primary" icon="el-icon-tickets" @click="handleEdit(scope.row.exchange_order_id,scope.$index, scope.row)">详细</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleEdit(scope.row.exchange_order_id,scope.$index, scope.row)">修改状态</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleEdit(scope.row.exchange_order_id,scope.$index, scope.row)">删除</el-button>
-						<el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.row.exchange_order_id,scope.$index, scope.row)">设置标签</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">查看详细</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">项目经验</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.row.id,scope.$index, scope.row)">设置标签</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -163,7 +164,7 @@
 				this.filterDate();
 			},
 			selectChangeByPage(val){
-				this.url = this.apiUrl+'/g01jfsc_zk65m/exchange_order/getExchangeOrderList?index='+this.select_page+'&page_size='+this.pageSize+'&status='+val;
+				this.url = this.apiUrl+'';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					this.tableData = res.data.data.list;
@@ -174,12 +175,12 @@
 			getData() {
 				this.select_cate="";
 				this.select_word="";
-				this.url = this.apiUrl+'/g01jfsc_zk65m/exchange_order/getExchangeOrderList?index='+this.cur_page+'&page_size='+this.pageSize;
+				this.url = this.apiUrl+'/client/api/member/findPage';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
-					this.tableData = res.data.data.list;
+					this.tableData = res.data.content;
 					this.loading = false;
-					this.totalNum = res.data.data.totalElements;
+					this.totalNum = res.data.totalElements;
 				})
 			},
 			// 编辑信息
