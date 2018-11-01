@@ -60,7 +60,7 @@ export default {
         },
         {
           icon: "el-icon-tickets",
-          index: "award",
+          index: "reward",
           title: "赏金管理"
         }
       ]

@@ -15,9 +15,7 @@
 					<el-option key="4" label="全部" value=""></el-option>
 				</el-select>
 				<el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10" @input="select_word_change"></el-input>
-				<!-- <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button> -->
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
-				<!-- <el-button type="primary" class="handle-del mr10" @click="showAllDatas" style="margin-left: 0px;">显示全部</el-button> -->
 				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
 
 			</div>

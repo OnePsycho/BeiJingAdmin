@@ -8,16 +8,16 @@
 		</div>
 		<div class="container">
 			<div class="handle-box">
-				<el-select v-model="select_cate" placeholder="用户身份" class="handle-select mr10" @change="selectChange">
-					<el-option key="1" label="甲方" value="3"></el-option>
-					<el-option key="2" label="设计院" value="2"></el-option>
-					<el-option key="3" label="自由设计师" value="1"></el-option>
+				<el-select v-model="select_cate" placeholder="状态" class="handle-select mr10" @change="selectChange">
+					<el-option key="1" label="正常" value="3"></el-option>
+					<el-option key="2" label="待审核" value="2"></el-option>
+					<el-option key="3" label="审核未通过" value="1"></el-option>
 					<el-option key="4" label="全部" value=""></el-option>
 				</el-select>
 				<el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10" @input="select_word_change"></el-input>
 				<!-- <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button> -->
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
-				<!-- <el-button type="primary" class="handle-del mr10" @click="showAllDatas" style="margin-left: 0px;">显示全部</el-button> -->
+				<el-button type="primary" class="handle-del mr10" @click="addAction" style="margin-left: 0px;">新增</el-button>
 				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
 
 			</div>
@@ -25,25 +25,20 @@
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
 				<el-table-column prop="id" label="编号"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="username" label="用户名"  align="center">
+				<el-table-column prop="name" label="姓名"  align="center">
 				</el-table-column>
-				<el-table-column prop="phoneNum" label="手机号"  align="center">
-				</el-table-column>
-				<el-table-column prop="email" label="邮箱地址"  sortable align="center">
-				</el-table-column>
-				<el-table-column prop="type" label="身份"  align="center">
+				<el-table-column prop="username" label="登录名"  align="center">
 				</el-table-column>
 				<el-table-column prop="status" label="状态"  align="center">
 				</el-table-column>
-				<el-table-column prop="phone" label="注册时间"   align="center">
+				<el-table-column prop="createTime" label="注册时间"   align="center">
 				</el-table-column>
-				<el-table-column label="操作" align="center" width="500px">
+				<el-table-column prop="enabled" label="是否显示在后台"   align="center">
+				</el-table-column>
+				<el-table-column label="操作" align="center" width="200px">
 					<template slot-scope="scope">
-						<el-button type="primary" icon="el-icon-tickets" @click="handleDetails(scope.row.id,scope.$index, scope.row)">查看详细</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleProjects(scope.row.id,scope.$index, scope.row)">项目经验</el-button>
 						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
-						<el-button type="danger" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">删除</el-button>
-						<el-button type="success" icon="el-icon-delete" @click="handleFlag(scope.row.id,scope.$index, scope.row)">设置标签</el-button>
+						<el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -55,91 +50,21 @@
 			</div>
 		</div>
 
-		<!-- 查看详情弹出框 -->
-		<el-dialog title="用户详情" :visible.sync="editVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="用户名" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="手机号" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="邮箱" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="真实姓氏" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="出生年月" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="性别" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="从业年限" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="擅长领域" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="身份" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="标签" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="editVisible = false">取 消</el-button>
-				<el-button type="primary" @click="editVisible = false">确 定</el-button>
-			</span>
-		</el-dialog>
-		
-		<!-- 查看项目弹出框 -->
-		<el-dialog title="项目经验" :visible.sync="projectVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-collapse v-model="activeName">
-				  <el-collapse-item title="项目名称基于O2O模式的系统" name="1">
-				    <div>项目类型：</div>
-				    <div>业主描述：</div>
-				  </el-collapse-item>
-				  <el-collapse-item title="反馈 Feedback" name="2">
-				    <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-				    <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-				  </el-collapse-item>
-				  <el-collapse-item title="效率 Efficiency" name="3">
-				    <div>简化流程：设计简洁直观的操作流程；</div>
-				    <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-				    <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
-				  </el-collapse-item>
-				  <el-collapse-item title="可控 Controllability" name="4">
-				    <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-				    <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
-				  </el-collapse-item>
-				</el-collapse>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="projectVisible = false">取 消</el-button>
-				<el-button type="primary" @click="projectVisible = false">确 定</el-button>
-			</span>
-		</el-dialog>
 		
 		<!-- 修改状态弹出框 -->
 		<el-dialog title="修改状态" :visible.sync="modifyVisible" width="620px">
 			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="编号" prop="product_category_name">
+				<el-form-item label="管理员姓名" prop="product_category_name">
 					<el-label v-model="form.product_category_name"></el-label>
 				</el-form-item>
-				<el-form-item label="用户名" prop="product_category_name">
+				<el-form-item label="登录名" prop="product_category_name">
 					<el-label v-model="form.product_category_name"></el-label>
 				</el-form-item>
 				<el-form-item label="修改状态" prop="product_category_name">
 					<el-select v-model="form.product_category_name" placeholder="请选择">
-					<el-option v-for="(item,index) in classifyList"
-					:key="index"
-					:label="item.name"
-					:value="item.name">
-					</el-option>
+					<el-option key="1" label="正常" value="3"></el-option>
+					<el-option key="2" label="待审核" value="2"></el-option>
+					<el-option key="3" label="审核未通过" value="1"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
@@ -149,14 +74,29 @@
 			</span>
 		</el-dialog>
 		
-		<!-- 设置标签弹出框 -->
-		<el-dialog title="设置标签" :visible.sync="flagVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				
+		<!-- 新增管理员弹出框 -->
+		<el-dialog title="新增管理员" :visible.sync="addVisible" width="620px">
+			<el-form ref="form" :model="form" label-width="100px">
+				<el-form-item label="管理员姓名" prop="product_name">
+					<el-input v-model="form.product_name" placeholder="请输入管理员姓名"></el-input>
+				</el-form-item>
+				<el-form-item label="登录名" prop="product_name">
+					<el-input v-model="form.product_name" placeholder="请输入登录名"></el-input>
+				</el-form-item>
+				<el-form-item label="密码" prop="product_name">
+					<el-input v-model="form.product_name" placeholder="请输入密码"></el-input>
+				</el-form-item>
+				<el-form-item label="状态" prop="product_category_name">
+					<el-select v-model="form.product_category_name">
+					<el-option key="1" label="正常" value="3"></el-option>
+					<el-option key="2" label="待审核" value="2"></el-option>
+					<el-option key="3" label="审核未通过" value="1"></el-option>
+					</el-select>
+				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
-				<el-button @click="flagVisible = false">取 消</el-button>
-				<el-button type="primary" @click="flagVisible = false">确 定</el-button>
+				<el-button @click="addVisible = false">取 消</el-button>
+				<el-button type="primary" @click="addVisible = false">确 定</el-button>
 			</span>
 		</el-dialog>
 		
@@ -189,9 +129,7 @@
 				select_word: '',
 				del_list: [],
 				is_search: false,
-				editVisible: false,
-				projectVisible: false,
-				flagVisible: false,
+				addVisible: false,
 				modifyVisible: false,
 				delVisible: false,
 				dialogImageUrl: '',
@@ -262,7 +200,7 @@
 			getData() {
 				this.select_cate="";
 				this.select_word="";
-				this.url = this.apiUrl+'/client/api/member/findPage';
+				this.url = this.apiUrl+'/client/api/admin/findPage';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					this.tableData = res.data.content;
@@ -270,65 +208,7 @@
 					this.totalNum = res.data.totalElements;
 				})
 			},
-			// 编辑信息
-			handleDetails(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-						this.$nextTick(function(){
-							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
-							}
-						})
-							this.editVisible = true;
-						
-					}
-				})
-			},
-			// 查看项目经验
-			handleProjects(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-						this.$nextTick(function(){
-							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
-							}
-						})
-							this.projectVisible = true;
-					}
-				})
-			},
+			
 			// 查看项目经验
 			handleModify(id,index, row) {
 				this.idx = index;
@@ -342,18 +222,7 @@
 					}
 				})
 			},
-			// 查看项目经验
-			handleFlag(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-							this.flagVisible = true;
-					}
-				})
-			},
+
 			// 删除信息
 			handleDelete(id,index, row) {
 				this.idx = index;

@@ -25,23 +25,23 @@ export default new Router({
                     component: resolve => require(['../components/page/BaseAdmin.vue'], resolve),
                     meta: { title: '管理员管理' }
                 },{
-                    path: '/area',
-                    component: resolve => require(['../components/page/BaseArea.vue'], resolve),
-                    meta: { title: '专区管理' }
+                    path: '/question',
+                    component: resolve => require(['../components/page/BaseQuestion.vue'], resolve),
+                    meta: { title: '问题管理' }
                 },{
-                    path: '/slider',
-                    component: resolve => require(['../components/page/BaseSlider.vue'], resolve),
-                    meta: { title: '轮播管理' }
+                    path: '/classify',
+                    component: resolve => require(['../components/page/BaseClassify.vue'], resolve),
+                    meta: { title: '分类管理' }
                 },{
                     path: '/table',
                     component: resolve => require(['../components/page/BaseTable.vue'], resolve),
                     meta: { title: '商品管理' }
-                },
-                {
-                    path: '/exchange',
-                    component: resolve => require(['../components/page/BaseExchange.vue'], resolve),
-                    meta: { title: '兑换管理' }
+                },{
+                    path: '/reward',
+                    component: resolve => require(['../components/page/BaseReward.vue'], resolve),
+                    meta: { title: '赏金管理' }
                 }
+               
             ]
         },
         {
