@@ -24,25 +24,23 @@
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
-				<el-table-column prop="id" label="问题标题"  align="center" width="80">
+				<el-table-column prop="title" label="问题标题"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="username" label="问题分类"  align="center">
+				<el-table-column prop="personnelType" label="问题分类"  align="center">
 				</el-table-column>
-				<el-table-column prop="phoneNum" label="手机号"  align="center">
+				<el-table-column prop="projectName" label="所属项目"  sortable align="center">
 				</el-table-column>
-				<el-table-column prop="email" label="所属项目"  sortable align="center">
+				<el-table-column prop="joinNum" label="参与人数"  align="center">
 				</el-table-column>
-				<el-table-column prop="type" label="参与人数"  align="center">
+				<el-table-column prop="reward" label="赏金金额"  align="center">
 				</el-table-column>
-				<el-table-column prop="status" label="赏金金额"  align="center">
+				<el-table-column prop="titleHide" label="是否组内公开" :formatter="judge"  align="center">
 				</el-table-column>
-				<el-table-column prop="phone" label="是否组内公开"   align="center">
+				<el-table-column prop="finishDate" label="截止时间"   align="center">
 				</el-table-column>
-				<el-table-column prop="phone" label="截止时间"   align="center">
+				<el-table-column prop="status" label="状态"   align="center">
 				</el-table-column>
-				<el-table-column prop="phone" label="状态"   align="center">
-				</el-table-column>
-				<el-table-column prop="phone" label="发布时间"   align="center">
+				<el-table-column prop="publishDate" label="发布时间"   align="center">
 				</el-table-column>
 				<el-table-column label="操作" align="center" width="400px">
 					<template slot-scope="scope">
@@ -279,7 +277,6 @@
 					this.filter_page = val;
 				}
 				this.filterDate();
-				
 			},
 			select_word_change(val){
 				this.filter_page = 1;
@@ -302,13 +299,16 @@
 			getData() {
 				this.select_cate="";
 				this.select_word="";
-				this.url = this.apiUrl+'/client/api/member/findPage';
+				this.url = this.apiUrl+'/client/api/question/findPage';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					this.tableData = res.data.content;
 					this.loading = false;
 					this.totalNum = res.data.totalElements;
 				})
+			},
+			judge(data){
+				return data.titleHide ? '是' : '否'
 			},
 			// 编辑信息
 			handleDetails(id,index, row) {

@@ -33,7 +33,7 @@
 				</el-table-column>
 				<el-table-column prop="status" label="状态"  align="center">
 				</el-table-column>
-				<el-table-column prop="phone" label="注册时间"   align="center">
+				<el-table-column prop="memberExt.createTime" label="注册时间"   align="center">
 				</el-table-column>
 				<el-table-column label="操作" align="center" width="500px">
 					<template slot-scope="scope">
@@ -56,35 +56,38 @@
 		<!-- 查看详情弹出框 -->
 		<el-dialog title="用户详情" :visible.sync="editVisible" width="620px">
 			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="用户名" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
+				<el-form-item label="用户名">
+					<div class="form-label">{{form.username}}</div>
 				</el-form-item> 
-				<el-form-item label="手机号" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
+				<el-form-item label="手机号">
+					<div class="form-label">{{form.phoneNum}}</div>
 				</el-form-item> 
-				<el-form-item label="邮箱" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
+				<el-form-item label="邮箱">
+					<div class="form-label">{{form.email}}</div>
 				</el-form-item> 
-				<el-form-item label="真实姓氏" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
+				<el-form-item label="真实姓氏">
+					<div class="form-label">{{form.realName}}</div>
 				</el-form-item> 
-				<el-form-item label="出生年月" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
+				<el-form-item label="出生年月">
+					<div class="form-label">{{form.birthday}}</div>
 				</el-form-item> 
-				<el-form-item label="性别" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
+				<el-form-item label="性别">
+					<div class="form-label">{{form.sex}}</div>
 				</el-form-item> 
-				<el-form-item label="从业年限" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
+				<el-form-item label="毕业院校">
+					<div class="form-label">{{form.graduate}}</div>
 				</el-form-item>
-				<el-form-item label="擅长领域" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
+				<el-form-item label="从业年限">
+					<div class="form-label">{{form.workTime}}</div>
 				</el-form-item>
-				<el-form-item label="身份" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
+				<el-form-item label="擅长领域">
+					<div class="form-label">{{form.personnelTypes}}</div>
 				</el-form-item>
-				<el-form-item label="标签" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
+				<el-form-item label="身份">
+					<div class="form-label">{{form.type}}</div>
+				</el-form-item>
+				<el-form-item label="标签">
+					<div class="form-label">{{form.flags}}</div>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
@@ -133,11 +136,11 @@
 				</el-form-item>
 				<el-form-item label="修改状态" prop="product_category_name">
 					<el-select v-model="form.product_category_name" placeholder="请选择">
-					<el-option v-for="(item,index) in classifyList"
+					<!-- <el-option v-for="(item,index) in classifyList"
 					:key="index"
 					:label="item.name"
 					:value="item.name">
-					</el-option>
+					</el-option> -->
 					</el-select>
 				</el-form-item>
 			</el-form>
@@ -273,28 +276,27 @@
 				this.idx = index;
 				this.currentId = id;
 				this.timePickerValue = [];
+				this.form = {};
 				// 点击获取商品详情
 				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
+					console.log(res);
 					if(res.status==200){
 						this.$nextTick(function(){
 							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
+								username:res.data.username,
+								phoneNum:res.data.memberExt.phoneNum,
+								email:res.data.email,
+								realName:res.data.memberExt.realName,
+								birthday:res.data.memberExt.birthday,
+								sex:res.data.memberExt.sex?"男":"女",
+								workTime:res.data.memberExt.workTime,
+								graduate:res.data.memberExt.graduateInstitutions,
+								personnelTypes:res.data.memberExt.personnelTypes,
+								type:res.data.type,
+								flags:res.data.memberExt.flags
 							}
 						})
 							this.editVisible = true;
-						
 					}
 				})
 			},
@@ -478,6 +480,11 @@
 	}
 	.el-upload--picture-card{
 		display: none !important;
+	}
+	.form-label{
+		font-size: 14px;
+		font-weight: 500;
+		color:black;
 	}
 
 

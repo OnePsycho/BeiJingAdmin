@@ -29,12 +29,12 @@
 				</el-table-column>
 				<el-table-column prop="username" label="登录名"  align="center">
 				</el-table-column>
-				<el-table-column prop="status" label="状态"  align="center">
+				<el-table-column prop="enabled" label="状态"  align="center">
 				</el-table-column>
 				<el-table-column prop="createTime" label="注册时间"   align="center">
 				</el-table-column>
-				<el-table-column prop="enabled" label="是否显示在后台"   align="center">
-				</el-table-column>
+				<!-- <el-table-column prop="enabled" label="是否显示在后台"   align="center">
+				</el-table-column> -->
 				<el-table-column label="操作" align="center" width="200px">
 					<template slot-scope="scope">
 						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
