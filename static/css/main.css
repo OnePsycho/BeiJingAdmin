@@ -51,6 +51,7 @@ a {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
+    min-height: 600px;
 }
 
 .crumbs {
@@ -221,4 +222,50 @@ a {
 }
 .header .logo[data-v-1c06a0fe]{
 	font-weight: bolder;
+}
+.el-collapse-item__header{
+    font-size: 16px;
+    font-weight: bolder;
+    margin-left: 5px;
+}
+.el-collapse-item__content{
+    margin-left: 8px;
+    line-height: 25px;
+    font-size: 14px;
+}
+.el-tag--small,.el-tag--medium{
+    margin-left: 10px;
+    margin-top: 8px;
+    cursor: pointer;
+}
+.button-new-tag[data-v-4bd6226e]{
+    height: 26px;
+    line-height: 26px;
+    margin-top: 8px;
+}
+.el-table__expanded-cell[class*=cell]{
+    padding: 0px;
+    padding-left: 48px;
+}
+.el-tree-node__content{
+    height: 50px;
+    border-bottom: 0.5px solid rgba(204, 204, 204, 0.6);
+    background: #fff;
+}
+.el-tree-node__content:hover{
+    background: #e4ecf5;
+}
+.el-tree-node__children .el-tree-node__content{
+    height: 50px;
+}
+.el-tabs__item,.el-tabs__item:last-child{
+    padding: 0px 80px !important;
+}
+.el-cascader--small{
+    width: 350px;
+}
+.el-upload--text{
+    width: 80px;
+    height: 32px;
+    border: 0;
 }

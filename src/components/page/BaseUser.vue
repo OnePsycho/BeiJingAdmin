@@ -8,14 +8,21 @@
 		</div>
 		<div class="container">
 			<div class="handle-box">
-				<el-select v-model="select_cate" placeholder="用户身份" class="handle-select mr10" @change="selectChange">
-					<el-option key="1" label="甲方" value="3"></el-option>
-					<el-option key="2" label="设计院" value="2"></el-option>
-					<el-option key="3" label="自由设计师" value="1"></el-option>
-					<el-option key="4" label="全部" value=""></el-option>
+				<el-select v-model="select_type" placeholder="用户身份" class="handle-select mr10" @change="selectChange">
+					<el-option key="1" label="甲方" value="firstParty"></el-option>
+					<el-option key="2" label="研究院" value="designingInstitute"></el-option>
+					<el-option key="3" label="自由设计师" value="freeDesigner"></el-option>
 				</el-select>
-				<el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-select v-model="select_status" placeholder="用户状态" class="handle-select mr10" @change="selectChange">
+					<el-option key="1" label="正常" value="normal"></el-option>
+					<el-option key="2" label="审核中" value="checkPending"></el-option>
+					<el-option key="3" label="未通过" value="refused"></el-option>
+				</el-select>
+				<el-input v-model="select_username" placeholder="用户名" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-input v-model="select_phone" placeholder="手机号" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-input v-model="select_email" placeholder="邮箱" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
+				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
 				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
 
 			</div>
@@ -27,7 +34,7 @@
 				</el-table-column>
 				<el-table-column prop="phoneNum" label="手机号"  align="center">
 				</el-table-column>
-				<el-table-column prop="email" label="邮箱地址"  sortable align="center">
+				<el-table-column prop="email" label="邮箱地址"  align="center" width="200">
 				</el-table-column>
 				<el-table-column prop="type" label="身份"  align="center">
 				</el-table-column>
@@ -40,7 +47,7 @@
 						<el-button type="primary" icon="el-icon-tickets" @click="handleDetails(scope.row.id,scope.$index, scope.row)">查看详细</el-button>
 						<el-button type="primary" icon="el-icon-tickets" @click="handleProjects(scope.row.id,scope.$index, scope.row)">项目经验</el-button>
 						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
-						<el-button type="danger" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
 						<el-button type="success" icon="el-icon-delete" @click="handleFlag(scope.row.id,scope.$index, scope.row)">设置标签</el-button>
 					</template>
 				</el-table-column>
@@ -98,25 +105,18 @@
 		
 		<!-- 查看项目弹出框 -->
 		<el-dialog title="项目经验" :visible.sync="projectVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
+			<el-form ref="form" :model="projectInfos" label-width="100px">
 				<el-collapse v-model="activeName">
-				  <el-collapse-item title="项目名称基于O2O模式的系统" name="1">
-				    <div>项目类型：</div>
-				    <div>业主描述：</div>
+				  <el-collapse-item :title="item.name" v-for="item in projectInfos" v-bind:key="item.id" class="projectTitle">
+				    <div>项目类型：{{item.platformType}}</div>
+				    <div>业主描述：{{item.ownerDescription}}</div>
+				    <div>项目落成时间：{{item.finishDate}}</div>
+				    <div>项目所在地：{{item.city}}</div>
+				    <div>项目规模：{{item.scale}}</div>
+				    <div>项目角色：{{item.role}}</div>
+				    <div>参与时间：{{item.startDate}} 至 {{item.endDate}}</div>
 				  </el-collapse-item>
-				  <el-collapse-item title="反馈 Feedback" name="2">
-				    <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-				    <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-				  </el-collapse-item>
-				  <el-collapse-item title="效率 Efficiency" name="3">
-				    <div>简化流程：设计简洁直观的操作流程；</div>
-				    <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-				    <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
-				  </el-collapse-item>
-				  <el-collapse-item title="可控 Controllability" name="4">
-				    <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-				    <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
-				  </el-collapse-item>
+				 
 				</el-collapse>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
@@ -127,37 +127,65 @@
 		
 		<!-- 修改状态弹出框 -->
 		<el-dialog title="修改状态" :visible.sync="modifyVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
+			<el-form ref="form" :model="form" label-width="100px">
 				<el-form-item label="编号" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
+					<div class="form-label">{{form.id}}</div>
 				</el-form-item>
 				<el-form-item label="用户名" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
+					<div class="form-label">{{form.username}}</div>
 				</el-form-item>
-				<el-form-item label="修改状态" prop="product_category_name">
-					<el-select v-model="form.product_category_name" placeholder="请选择">
-					<!-- <el-option v-for="(item,index) in classifyList"
-					:key="index"
-					:label="item.name"
-					:value="item.name">
-					</el-option> -->
+				<el-form-item label="修改状态" prop="status">
+					<el-select v-model="form.status" placeholder="请选择">
+					<el-option key="1" label="审核中" value="checkPending"></el-option>
+					<el-option key="2" label="正常" value="normal"></el-option>
+					<el-option key="3" label="未通过" value="refused"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="modifyVisible = false">取 消</el-button>
-				<el-button type="primary" @click="modifyVisible = false">确 定</el-button>
+				<el-button type="primary" @click="saveStatusChange">确 定</el-button>
 			</span>
 		</el-dialog>
 		
 		<!-- 设置标签弹出框 -->
 		<el-dialog title="设置标签" :visible.sync="flagVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				
+			<el-form ref="form" :model="form" label-width="100px" @submit.native.prevent>
+				<p class="tag-title">已有标签</p>
+				<el-tag
+					v-for="tag in currentTags"
+					:key="tag.index"
+					v-model="currentTags"
+					:disable-transitions="false"
+					closable
+					@close="handleClose(tag)">
+					{{tag}}
+				</el-tag>
+				<el-input
+				class="input-new-tag"
+				v-if="inputVisible"
+				v-model="inputValue"
+				ref="saveTagInput"
+				size="small"
+				@keyup.enter.native="$event.target.blur"
+				@blur="handleInputConfirm"
+				>
+				</el-input>
+				<el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
+				<p class="tag-title">可选标签</p>
+				<el-tag
+					v-for="tag in tags"
+					:key="tag.index"
+					v-model="tags"
+					size="medium"
+					@click.native="tagClick(tag)"
+					type="info">
+					{{tag}}
+				</el-tag>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="flagVisible = false">取 消</el-button>
-				<el-button type="primary" @click="flagVisible = false">确 定</el-button>
+				<el-button type="primary" @click="saveFlagChange">确 定</el-button>
 			</span>
 		</el-dialog>
 		
@@ -181,13 +209,15 @@
 				url: '',
 				tableData: [],
 				activeName:1,
-				cur_page: 1,
-				select_page:1,
-				filter_page:1,
+				cur_page: 0,
+				filter_page:0,
 				apiUrl:domain.apiUrl,
 				multipleSelection: [],
-				select_cate: '',
-				select_word: '',
+				select_type: '',
+				select_status:'',
+				select_username: '',
+				select_phone: '',
+				select_email: '',
 				del_list: [],
 				is_search: false,
 				editVisible: false,
@@ -209,6 +239,22 @@
 				pageSize:10,
 				currentId:0,
 				deleteIdArr:[],
+				projectInfos:{},
+				tags: [],
+				currentTags: [],
+				inputVisible: false,
+				inputValue: '',
+				newTags:[],
+				userStatus:{
+				'checkPending': '审核中',
+				'normal': '正常',
+				'refused': '未通过'
+				},
+				userTypes:{
+				'designingInstitute': '研究院',
+				'firstParty': '甲方',
+				'freeDesigner': '自由设计师'
+				}
 			}
 		},
 		created() {
@@ -235,20 +281,15 @@
 			// 分页导航
 			handleCurrentChange(val) {
 				this.cur_page = val;
-     			this.select_page = val;
-				if(this.select_word!=""||this.select_cate!=""){
-					this.filter_page = val;
-				}
+				this.filter_page = val;
 				this.filterDate();
-				
 			},
 			select_word_change(val){
-				this.filter_page = 1;
-				},
+				this.filter_page = 0;
+			},
 			selectChange(val){
-				this.cur_page = 1;
-				this.select_page = 1;
-				this.filter_page = 1;
+				this.cur_page = 0;
+				this.filter_page = 0;
 				this.filterDate();
 			},
 			selectChangeByPage(val){
@@ -259,18 +300,36 @@
 					this.totalNum = res.data.data.totalElements;
 				})
 			},
-			// 获取商品信息
+			// 获取用户信息
 			getData() {
-				this.select_cate="";
-				this.select_word="";
+				this.select_type="";
+				this.select_status="";
+				this.select_username="";
+				this.select_phone="";
+				this.select_email="";
 				this.url = this.apiUrl+'/client/api/member/findPage';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					this.tableData = res.data.content;
+					for (var key in this.userStatus) {
+						for (var i = 0; i < res.data.content.length; i++) {
+								if (key == res.data.content[i].status) {
+									res.data.content[i].status = this.userStatus[key];
+								}
+							}
+						}
+					for (var key in this.userTypes) {
+						for (var i = 0; i < res.data.content.length; i++) {
+								if (key == res.data.content[i].type) {
+									res.data.content[i].type = this.userTypes[key];
+								}
+							}
+						}
 					this.loading = false;
 					this.totalNum = res.data.totalElements;
 				})
 			},
+
 			// 编辑信息
 			handleDetails(id,index, row) {
 				this.idx = index;
@@ -284,7 +343,7 @@
 						this.$nextTick(function(){
 							this.form = {
 								username:res.data.username,
-								phoneNum:res.data.memberExt.phoneNum,
+								phoneNum:res.data.phoneNum,
 								email:res.data.email,
 								realName:res.data.memberExt.realName,
 								birthday:res.data.memberExt.birthday,
@@ -295,6 +354,11 @@
 								type:res.data.type,
 								flags:res.data.memberExt.flags
 							}
+							for (var key in this.userTypes) {
+								if (key == this.form.type) {
+									this.form.type = this.userTypes[key];
+							}
+						}
 						})
 							this.editVisible = true;
 					}
@@ -305,31 +369,17 @@
 				this.idx = index;
 				this.currentId = id;
 				this.timePickerValue = [];
-				// 点击获取商品详情
 				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
 					if(res.status==200){
+						console.log(res.data);
 						this.$nextTick(function(){
-							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
-							}
+							this.projectInfos = res.data.projectInfos;
 						})
 							this.projectVisible = true;
 					}
 				})
 			},
-			// 查看项目经验
+			// 修改状态
 			handleModify(id,index, row) {
 				this.idx = index;
 				this.currentId = id;
@@ -337,20 +387,42 @@
 				// 点击获取商品详情
 				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
 					if(res.status==200){
+						this.$nextTick(function(){
+							this.form = {
+								username:res.data.username,
+								type:res.data.type,
+								status:res.data.status,
+								id:res.data.id
+							}
+						})
 							this.modifyVisible = true;
 						
 					}
 				})
 			},
-			// 查看项目经验
+			// 修改标签
 			handleFlag(id,index, row) {
 				this.idx = index;
 				this.currentId = id;
 				this.timePickerValue = [];
-				// 点击获取商品详情
+				this.tags = [];
+				// 获取用户信息详情
 				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
 					if(res.status==200){
-							this.flagVisible = true;
+						this.flagVisible = true;
+						if(res.data.memberExt.flags){
+							this.currentTags = res.data.memberExt.flags.split(',');
+						}else{
+							this.currentTags = [];
+						}
+					}
+				})
+				// 获取所有标签
+				this.$axios.get(this.apiUrl+'/client/api/flag/findAll').then((res) => {
+					if(res.status==200){
+						for(var i=0;i<res.data.length;i++){
+							this.tags.push(res.data[i].name);
+						}
 					}
 				})
 			},
@@ -371,21 +443,30 @@
 					this.del_list = this.del_list.concat(this.multipleSelection);
 					for (let i = 0; i < length; i++) {
 						str += this.multipleSelection[i].order_code + ' ';
-						this.deleteIdArr.push(this.multipleSelection[i].exchange_order_id);
+						this.deleteIdArr.push(this.multipleSelection[i].id);
 					}
-					this.$axios.post(this.apiUrl+'/g01jfsc_zk65m/exchange_order/deleteExchangeOrder',
-						{exchange_order_id: this.deleteIdArr,
-							paramsSerializer:exchange_order_id => {
-								return qs.stringify(exchange_order_id, { indices: false })}
-					}).then((res) => { 
-								if(res.data.code==200){
-									this.getData();
-									console.log(this.tableData);
-									this.$message.success('删除成功!');
-									this.multipleSelection = [];
-									this.deleteIdArr = [];
-								}
-							})
+					this.$axios({
+					method:"post",
+					url:this.apiUrl+'/client/api/member/deleteByIds',
+					data:{
+						ids:this.deleteIdArr,
+						_method:'delete'
+					},
+					transformRequest: [function (data) {
+						let ret = ''
+						for (let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+						return ret
+					}],
+				}).then((res)=>{
+						this.getData();
+						this.tableData.splice(this.idx, 1);
+						this.$message.success('删除成功');
+						this.delVisible = false;
+						this.deleteIdArr = [];
+				})
+					
 				}
 				
 			},
@@ -396,19 +477,29 @@
 			// 确定删除
 			deleteRow() {
 				this.deleteIdArr.push(this.currentId);
-				this.$axios.post(this.apiUrl+'/g01jfsc_zk65m/exchange_order/deleteExchangeOrder',
-				{exchange_order_id: this.deleteIdArr,
-				paramsSerializer:exchange_order_id => {
-					return qs.stringify(exchange_order_id, { indices: false })}
-				}).then((res) => {
-							if(res.data.code==200){
-								this.getData();
-								this.tableData.splice(this.idx, 1);
-								this.$message.success('删除成功');
-								this.delVisible = false;
-								this.deleteIdArr = [];
-							}
-						})
+
+				this.$axios({
+					method:"post",
+					url:this.apiUrl+'/client/api/member/deleteByIds',
+					data:{
+						ids:this.deleteIdArr,
+						_method:'delete'
+					},
+					transformRequest: [function (data) {
+						let ret = ''
+						for (let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+						return ret
+					}],
+				}).then((res)=>{
+						this.getData();
+						this.tableData.splice(this.idx, 1);
+						this.$message.success('删除成功');
+						this.delVisible = false;
+						this.deleteIdArr = [];
+				})
+
 			},
 			// 移除文件
 			handleRemove(file, fileList) {
@@ -418,32 +509,142 @@
 			addAction(){
 				this.addVisible = true;
 			},
-			// 切换页码
+			// 切换每页显示数量
 			handleSizeChange(val) {
 				this.pageSize = val;
 				this.filterDate();
 			},
+			// 筛选数据
 			filterDate() {
 				this.$axios
 				.get(
 					this.apiUrl +
-					"/g01jfsc_zk65m/exchange_order/getExchangeOrderList?page_size=" +
+					"/client/api/member/findPage?size=" +
 					this.pageSize +
-					"&index=" +
+					"&page=" +
 					this.filter_page+
-					"&keyword="+
-					this.select_word+
+					"&memberName="+
+					this.select_username+
+					"&phoneNum="+
+					this.select_phone+
+					"&email="+
+					this.select_email+
+					"&type="+
+					this.select_type+
 					"&status="+
-					this.select_cate
+					this.select_status
 				)
 				.then(res => {
 					console.log(res);
-					this.tableData = res.data.data.list;
-					this.totalNum = res.data.data.totalElements;
-					this.pageSize = res.data.data.pageSize;
+				for (var key in this.userStatus) {
+					for (var i = 0; i < res.data.content.length; i++) {
+							if (key == res.data.content[i].status) {
+								res.data.content[i].status = this.userStatus[key];
+							}
+						}
+					}
+				for (var key in this.userTypes) {
+					for (var i = 0; i < res.data.content.length; i++) {
+							if (key == res.data.content[i].type) {
+								res.data.content[i].type = this.userTypes[key];
+							}
+						}
+					}
+					this.tableData = res.data.content;
+					this.totalNum = res.data.totalElements;
+					this.pageSize = res.data.size;
 				});
 			
 			},
+			// 删除标签
+			handleClose(tag){
+				console.log(tag,this.currentTags);
+				this.currentTags.splice(this.currentTags.indexOf(tag),1);
+				if(this.newTags.indexOf(tag)!=-1){
+					this.newTags.splice(this.newTags.indexOf(tag),1);
+				}
+			},
+			// 自定义标签
+			showInput() {
+				this.inputVisible = true;
+				this.$nextTick(_ => {
+				this.$refs.saveTagInput.$refs.input.focus();
+				});
+			},
+			handleInputConfirm() {
+				let inputValue = this.inputValue;
+				console.log(this.currentTags);
+				if (inputValue) {
+					if(this.currentTags.indexOf(inputValue)==-1){
+						this.currentTags.push(inputValue);
+						if(this.newTags.indexOf(inputValue)== -1 && this.tags.indexOf(inputValue) == -1){
+							console.log(this.tags);
+							this.newTags.push(inputValue);
+						}}else{
+						this.$message("该标签已存在");
+					}
+				}
+				this.inputVisible = false;
+				this.inputValue = '';
+			},
+			// 保存新增的标签
+			saveFlagChange(){
+				this.flagVisible = false;
+				let newFlags = [];
+				let that = this;
+				for (let index = 0; index < that.newTags.length; index++) {
+					newFlags.push({'name':that.newTags[index]});
+				}
+				this.$axios.post(this.apiUrl+'/client/api/flag/adds',newFlags).then((res) => {
+					console.log(res);
+				})
+				this.$axios({
+					method:"post",
+					url:this.apiUrl+'/client/api/memberExt/update',
+					data:{
+						flags:this.currentTags,
+						memberId:this.currentId,
+						_method:'PUT'
+					},
+					transformRequest: [function (data) {
+						let ret = ''
+						for (let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+						return ret
+					}],
+				}).then((res) => {
+					if(res.status == 200){
+						this.$message.success("设置成功!");
+					}
+				})
+			},
+			tagClick(tag){
+				let cTags = this.currentTags;
+				let aTags = this.tags;
+				console.log(tag);
+				if(cTags.indexOf(tag)==-1){
+					cTags.push(tag);
+					// aTags.splice(aTags.indexOf(tag),1);
+				}else{
+					this.$message("已有此标签！");
+				}
+			},
+			//保存修改状态
+			saveStatusChange(){
+				this.modifyVisible = false;
+				console.log(this.form.status);
+				let f = new FormData();
+				f.append('id',this.currentId);
+				f.append('status',this.form.status);
+				f.append('_method','PUT');
+				this.$axios.post(this.apiUrl+'/client/api/member/update',f).then((res) => {
+					if(res.status == 200){
+						this.$message.success("修改成功!");
+						this.getData();
+					}
+				})
+			}
 		}
 	}
 </script>
@@ -454,11 +655,11 @@
 	}
 
 	.handle-select {
-		width: 120px;
+		width: 150px;
 	}
 
 	.handle-input {
-		width: 300px;
+		width: 200px;
 		display: inline-block;
 	}
 
@@ -486,6 +687,20 @@
 		font-weight: 500;
 		color:black;
 	}
-
-
+	.tag-title{
+		margin-bottom: 10px;
+		margin-top: 20px;
+	}
+	.button-new-tag {
+		margin-left: 10px;
+		height: 32px;
+		line-height: 30px;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+	.input-new-tag {
+		width: 90px;
+		margin-left: 10px;
+		vertical-align: bottom;
+	}
 </style>
