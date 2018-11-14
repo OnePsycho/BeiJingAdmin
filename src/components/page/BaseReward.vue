@@ -21,9 +21,9 @@
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
-				<el-table-column prop="id" label="编号"  align="center" width="80">
+				<el-table-column prop="id" label="问题标题"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="username" label="用户名"  align="center">
+				<el-table-column prop="username" label="所属项目"  align="center">
 				</el-table-column>
 				<el-table-column prop="phoneNum" label="手机号"  align="center">
 				</el-table-column>
