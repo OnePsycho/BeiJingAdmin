@@ -3,7 +3,7 @@
 		<div class="crumbs">
 			<el-breadcrumb separator="/">
 				<el-breadcrumb-item>
-					<i class="el-icon-tickets"></i>  赏金管理</el-breadcrumb-item>
+					<i class="el-icon-tickets"></i>  标签管理</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
 		<div class="container">
@@ -21,23 +21,15 @@
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
-				<el-table-column prop="id" label="问题标题"  align="center" width="80">
+				<el-table-column prop="id" label="标签编号"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="username" label="所属项目"  align="center">
+				<el-table-column prop="username" label="标签名称" align="center">
 				</el-table-column>
-				<el-table-column prop="phoneNum" label="赏金总金额"  align="center">
-				</el-table-column>
-				<el-table-column prop="email" label="项目截止时间"  sortable align="center">
-				</el-table-column>
-				<el-table-column prop="status" label="状态"  align="center">
-				</el-table-column>
-				<el-table-column prop="phone" label="项目发布时间"   align="center">
+				<el-table-column prop="phone" label="创建时间" align="center">
 				</el-table-column>
 				<el-table-column label="操作" align="center" width="500px">
 					<template slot-scope="scope">
-						<el-button type="primary" icon="el-icon-tickets" @click="handleDetails(scope.row.id,scope.$index, scope.row)">查看赏金分布</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleProjects(scope.row.id,scope.$index, scope.row)">项目经理意见</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">发放赏金</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改</el-button>
 						<el-button type="danger" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
@@ -343,6 +335,7 @@
 								}
 							})
 				}
+				
 			},
 			// 表格选择
 			handleSelectionChange(val) {
@@ -356,14 +349,14 @@
 				paramsSerializer:exchange_order_id => {
 					return qs.stringify(exchange_order_id, { indices: false })}
 				}).then((res) => {
-					if(res.data.code==200){
-						this.getData();
-						this.tableData.splice(this.idx, 1);
-						this.$message.success('删除成功');
-						this.delVisible = false;
-						this.deleteIdArr = [];
-					}
-				})
+							if(res.data.code==200){
+								this.getData();
+								this.tableData.splice(this.idx, 1);
+								this.$message.success('删除成功');
+								this.delVisible = false;
+								this.deleteIdArr = [];
+							}
+						})
 			},
 			// 移除文件
 			handleRemove(file, fileList) {

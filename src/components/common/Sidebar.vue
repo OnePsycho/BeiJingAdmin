@@ -41,7 +41,12 @@ export default {
         {
           icon: "el-icon-tickets",
           index: "user",
-          title: "用户管理"
+          title: "设计师管理"
+        },
+         {
+          icon: "el-icon-tickets",
+          index: "firstparty",
+          title: "甲方管理"
         },
         {
           icon: "el-icon-tickets",
@@ -62,7 +67,27 @@ export default {
           icon: "el-icon-tickets",
           index: "reward",
           title: "赏金管理"
-        }
+        },
+        {
+          icon: "el-icon-tickets",
+          index: "1",
+          title: "个性管理",
+          subs:[
+            {
+                index: 'nickname',
+                title: '昵称管理'
+            },
+            {
+                index: 'avatar',
+                title: '头像管理'
+            },
+          ]
+        },
+         {
+          icon: "el-icon-tickets",
+          index: "tag",
+          title: "标签管理"
+        },
       ]
     };
   },
@@ -109,21 +134,24 @@ export default {
   width: 0;
 }
 .sidebar-el-menu:not(.el-menu--collapse) {
-  width: 200px;
+  width: 250px;
 }
 .sidebar > ul {
   height: 100%;
 }
 .el-menu-item,
 .el-submenu__title {
-  line-height: 60px;
-  height: 60px;
+  line-height: 55px;
+  height: 55px;
 }
-.el-menu-item span {
+.el-menu-item span,.el-submenu__title span {
   margin-left: 5px;
 }
 .is-active {
   background-color: #056ad2 !important;
   color: #ffffff !important;
+}
+.el-menu--inline .el-menu-item[data-v-085de0bb]{
+  padding-left: 70px !important;
 }
 </style>

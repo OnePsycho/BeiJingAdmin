@@ -18,9 +18,12 @@ export default new Router({
                 {
                     path: '/user',
                     component: resolve => require(['../components/page/BaseUser.vue'], resolve),
-                    meta: { title: '用户管理' }
-                },
-                {
+                    meta: { title: '设计师管理' }
+                },{
+                    path: '/firstparty',
+                    component: resolve => require(['../components/page/BaseFirstParty.vue'], resolve),
+                    meta: { title: '甲方管理' }
+                },{
                     path: '/admin',
                     component: resolve => require(['../components/page/BaseAdmin.vue'], resolve),
                     meta: { title: '管理员管理' }
@@ -40,6 +43,18 @@ export default new Router({
                     path: '/reward',
                     component: resolve => require(['../components/page/BaseReward.vue'], resolve),
                     meta: { title: '赏金管理' }
+                },{
+                    path: '/nickname',
+                    component: resolve => require(['../components/page/BaseNickname.vue'], resolve),
+                    meta: { title: '昵称管理' }
+                },{
+                    path: '/avatar',
+                    component: resolve => require(['../components/page/BaseAvatar.vue'], resolve),
+                    meta: { title: '头像管理' }
+                },{
+                    path: '/tag',
+                    component: resolve => require(['../components/page/BaseTag.vue'], resolve),
+                    meta: { title: '标签管理' }
                 }
                
             ]

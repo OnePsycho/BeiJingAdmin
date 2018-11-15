@@ -32,15 +32,13 @@
 				</el-table-column>
 				<el-table-column prop="username" label="用户名"  align="center">
 				</el-table-column>
-				<el-table-column prop="phoneNum" label="手机号"  align="center">
+				<el-table-column prop="phoneNum" label="手机号"  align="center" width="120">
 				</el-table-column>
 				<el-table-column prop="email" label="邮箱地址"  align="center" width="200">
 				</el-table-column>
-				<el-table-column prop="type" label="身份"  align="center">
+				<el-table-column prop="status" label="状态"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="status" label="状态"  align="center">
-				</el-table-column>
-				<el-table-column prop="memberExt.createTime" label="注册时间"   align="center">
+				<el-table-column prop="createTime" label="注册时间"   align="center">
 				</el-table-column>
 				<el-table-column label="操作" align="center" width="500px">
 					<template slot-scope="scope">
@@ -307,7 +305,7 @@
 				this.select_username="";
 				this.select_phone="";
 				this.select_email="";
-				this.url = this.apiUrl+'/client/api/member/findPage';
+				this.url = this.apiUrl+'/client/api/member/findPage?type=freeDesigner';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					this.tableData = res.data.content;
