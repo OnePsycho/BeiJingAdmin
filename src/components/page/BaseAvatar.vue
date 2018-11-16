@@ -15,6 +15,7 @@
 				action=""
 				list-type="picture-card"
 				:auto-upload="true"
+				multiple
 				:file-list="imgList"
 				:on-preview="handlePictureCardPreview"
 				:http-request="uploadAvatar"
@@ -42,6 +43,7 @@
 				cur_page: 1,
 				filter_page:1,
 				apiUrl:domain.apiUrl,
+				apiImgUrl:domain.apiImgUrl,
 				select_word: '',
 				del_list: [],
 				flagVisible: false,
@@ -69,7 +71,7 @@
 		watch: {
 			//监听路由变化
 			$route(to) {
-			if (to.path == "/exchange") {
+			if (to.path == "/avatar") {
 				this.getData(); //当前页面展示即刷新数据
 			}
 			}
@@ -115,28 +117,42 @@
 			},
 			// 获取商品信息
 			getData() {
-				this.select_cate="";
-				this.select_word="";
+				this.imgList = [];
 				this.url = this.apiUrl+'/client/api/nicknameAndHeadImg/findPage?nickName=false';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					let imgRes= res.data.content;
 					for (let index = 0; index < imgRes.length; index++) {
-						this.imgList.push({url:imgRes[index]})
+						this.imgList.push({url:this.apiImgUrl+imgRes[index].headImg,id:imgRes[index].id})
 					}
 					this.loading = false;
 					this.totalNum = res.data.totalElements;
 				})
 			},
-		
 			// 移除文件
 			handleRemove(file, fileList) {
+				this.imgList = fileList;
 				console.log(file, fileList);
+				this.$axios({
+					method:"post",
+					url:this.apiUrl+'/client/api/nicknameAndHeadImg/deleteById',
+					data:{
+						id:file.id,
+						_method:'delete'
+					},
+					transformRequest: [function (data) {
+						let ret = ''
+						for (let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+						return ret
+					}],
+				}).then((res)=>{
+						this.$message.success('删除成功');
+				})
 			},
 			handlePictureCardPreview(file) {
 				console.log(file);
-			this.dialogImageUrl = file.url;
-			this.dialogVisible = true;
 			},
 			// 切换页码
 			handleSizeChange(val) {
@@ -149,9 +165,12 @@
 				formData.append("file", res.file);
 				this.$axios.post(this.apiUrl + "/client/api/file/upload", formData).then(res => {
 					if(res.status==200){
-						// this.imgList.push(res.data); 
+						this.$axios.post(this.apiUrl + "/client/api/nicknameAndHeadImg/add?headImg="+res.data).then(response => {
+							if(response.status == 200){
+								this.$message.success("上传成功");
+							}
+						})
 					}
-						this.$message.success("上传成功");
 					}
 					);
 			}

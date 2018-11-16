@@ -348,7 +348,7 @@
 				this.select_status="";
 				this.select_title="";
 				this.select_project_name="";
-				this.url = this.apiUrl+'/client/api/question/findPage?size='+this.pageSize+'&page='+this.filter_page;
+				this.url = this.apiUrl+'/client/api/question/findPage?size='+this.pageSize+'&page='+this.filter_page+"&sort=id,desc";
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					for (var key in this.questionStatus) {
@@ -570,7 +570,8 @@
 					"&type="+
 					this.select_type+
 					"&status="+
-					this.select_status
+					this.select_status+
+					"&sort=id,desc"
 				)
 				.then(res => {
 					console.log(res);
@@ -583,7 +584,6 @@
 						}
 					this.tableData = res.data.content;
 					this.totalNum = res.data.totalElements;
-					this.pageSize = res.data.size;
 				});
 			
 			},

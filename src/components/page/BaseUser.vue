@@ -550,7 +550,6 @@
 					}
 					this.tableData = res.data.content;
 					this.totalNum = res.data.totalElements;
-					this.pageSize = res.data.size;
 				});
 			
 			},

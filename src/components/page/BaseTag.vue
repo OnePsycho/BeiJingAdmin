@@ -8,29 +8,22 @@
 		</div>
 		<div class="container">
 			<div class="handle-box">
-				<el-select v-model="select_cate" placeholder="用户身份" class="handle-select mr10" @change="selectChange">
-					<el-option key="1" label="甲方" value="3"></el-option>
-					<el-option key="2" label="设计院" value="2"></el-option>
-					<el-option key="3" label="自由设计师" value="1"></el-option>
-					<el-option key="4" label="全部" value=""></el-option>
-				</el-select>
 				<el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
+				<el-button type="primary" class="handle-del mr10" @click="addAction" style="margin-left: 0px;">新增</el-button>
+				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
 				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
-
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
-				<el-table-column prop="id" label="标签编号"  align="center" width="80">
+				<el-table-column prop="name" label="标签名称" align="center">
 				</el-table-column>
-				<el-table-column prop="username" label="标签名称" align="center">
+				<el-table-column prop="createTime" label="创建时间" align="center">
 				</el-table-column>
-				<el-table-column prop="phone" label="创建时间" align="center">
-				</el-table-column>
-				<el-table-column label="操作" align="center" width="500px">
+				<el-table-column label="操作" align="center" width="200px">
 					<template slot-scope="scope">
 						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改</el-button>
-						<el-button type="danger" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -41,72 +34,6 @@
 				</el-pagination>
 			</div>
 		</div>
-
-		<!-- 查看详情弹出框 -->
-		<el-dialog title="用户详情" :visible.sync="editVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="用户名" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="手机号" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="邮箱" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="真实姓氏" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="出生年月" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="性别" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="从业年限" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="擅长领域" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="身份" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="标签" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="editVisible = false">取 消</el-button>
-				<el-button type="primary" @click="editVisible = false">确 定</el-button>
-			</span>
-		</el-dialog>
-
-		
-		<!-- 修改状态弹出框 -->
-		<el-dialog title="修改状态" :visible.sync="modifyVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="编号" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="用户名" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="修改状态" prop="product_category_name">
-					<el-select v-model="form.product_category_name" placeholder="请选择">
-					<el-option v-for="(item,index) in classifyList"
-					:key="index"
-					:label="item.name"
-					:value="item.name">
-					</el-option>
-					</el-select>
-				</el-form-item>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="modifyVisible = false">取 消</el-button>
-				<el-button type="primary" @click="modifyVisible = false">确 定</el-button>
-			</span>
-		</el-dialog>
 
 		<!-- 删除提示框 -->
 		<el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
@@ -137,18 +64,11 @@
 				select_word: '',
 				del_list: [],
 				is_search: false,
-				editVisible: false,
-				projectVisible: false,
-				flagVisible: false,
-				modifyVisible: false,
 				delVisible: false,
 				dialogImageUrl: '',
 				dialogVisible: false,
 				content: '',
 				timePickerValue: [],
-				editorOption: {
-					placeholder: '使用规则、使用流程...'
-				},
 				form: {},
 				idx: -1,
 				loading:true,
@@ -167,7 +87,7 @@
 		  watch: {
 			//监听路由变化
 			$route(to) {
-			if (to.path == "/exchange") {
+			if (to.path == "/tag") {
 				this.getData(); //当前页面展示即刷新数据
 			}
 			}
@@ -182,35 +102,17 @@
 			// 分页导航
 			handleCurrentChange(val) {
 				this.cur_page = val;
-     			this.select_page = val;
-				if(this.select_word!=""||this.select_cate!=""){
-					this.filter_page = val;
-				}
+				this.filter_page = val;
 				this.filterDate();
-				
 			},
 			select_word_change(val){
 				this.filter_page = 1;
-				},
-			selectChange(val){
-				this.cur_page = 1;
-				this.select_page = 1;
-				this.filter_page = 1;
-				this.filterDate();
 			},
-			selectChangeByPage(val){
-				this.url = this.apiUrl+'';
-				this.$axios.get(this.url).then((res) => {
-					console.log(res);
-					this.tableData = res.data.data.list;
-					this.totalNum = res.data.data.totalElements;
-				})
-			},
-			// 获取商品信息
+
+			// 获取信息
 			getData() {
-				this.select_cate="";
 				this.select_word="";
-				this.url = this.apiUrl+'/client/api/member/findPage';
+				this.url = this.apiUrl+'/client/api/flag/findPage?size='+this.pageSize+'&page='+this.filter_page+'&sort=id,desc';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					this.tableData = res.data.content;
@@ -218,90 +120,32 @@
 					this.totalNum = res.data.totalElements;
 				})
 			},
-			// 编辑信息
-			handleDetails(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-						this.$nextTick(function(){
-							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
-							}
-						})
-							this.editVisible = true;
-						
-					}
-				})
-			},
-			// 查看项目经验
-			handleProjects(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-						this.$nextTick(function(){
-							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
-							}
-						})
-							this.projectVisible = true;
-					}
-				})
-			},
-			// 查看项目经验
+		
+			// 修改昵称
 			handleModify(id,index, row) {
 				this.idx = index;
 				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-							this.modifyVisible = true;
-						
-					}
-				})
+				this.$prompt("请输入修改后的标签名称", "提示", {
+					confirmButtonText: "确定",
+					cancelButtonText: "取消"
+				}).then(({ value }) => {
+					let f = new FormData();
+					f.append("id", id);
+					f.append("_method", "PUT");
+					f.append("name", value);
+					this.$axios
+					.post(this.apiUrl + "/client/api/flag/update", f)
+					.then(res => {
+						if (res.status == 200) {
+						this.getData();
+						this.$message.success("修改成功!");
+						} else {
+						this.$message.error("修改失败!");
+						}
+					});
+				});
 			},
-			// 查看项目经验
-			handleFlag(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-							this.flagVisible = true;
-					}
-				})
-			},
+
 			// 删除信息
 			handleDelete(id,index, row) {
 				this.idx = index;
@@ -319,23 +163,31 @@
 					this.del_list = this.del_list.concat(this.multipleSelection);
 					for (let i = 0; i < length; i++) {
 						str += this.multipleSelection[i].order_code + ' ';
-						this.deleteIdArr.push(this.multipleSelection[i].exchange_order_id);
+						this.deleteIdArr.push(this.multipleSelection[i].id);
 					}
-					this.$axios.post(this.apiUrl+'/g01jfsc_zk65m/exchange_order/deleteExchangeOrder',
-						{exchange_order_id: this.deleteIdArr,
-							paramsSerializer:exchange_order_id => {
-								return qs.stringify(exchange_order_id, { indices: false })}
-					}).then((res) => { 
-								if(res.data.code==200){
-									this.getData();
-									console.log(this.tableData);
-									this.$message.success('删除成功!');
-									this.multipleSelection = [];
-									this.deleteIdArr = [];
-								}
-							})
+					this.$axios({
+					method:"post",
+					url:this.apiUrl+'/client/api/flag/deleteByIds',
+					data:{
+						ids:this.deleteIdArr,
+						_method:'delete'
+					},
+					transformRequest: [function (data) {
+						let ret = ''
+						for (let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+						return ret
+					}],
+				}).then((res)=>{
+						this.getData();
+						this.tableData.splice(this.idx, 1);
+						this.$message.success('删除成功');
+						this.delVisible = false;
+						this.deleteIdArr = [];
+				})
+					
 				}
-				
 			},
 			// 表格选择
 			handleSelectionChange(val) {
@@ -344,19 +196,27 @@
 			// 确定删除
 			deleteRow() {
 				this.deleteIdArr.push(this.currentId);
-				this.$axios.post(this.apiUrl+'/g01jfsc_zk65m/exchange_order/deleteExchangeOrder',
-				{exchange_order_id: this.deleteIdArr,
-				paramsSerializer:exchange_order_id => {
-					return qs.stringify(exchange_order_id, { indices: false })}
-				}).then((res) => {
-							if(res.data.code==200){
-								this.getData();
-								this.tableData.splice(this.idx, 1);
-								this.$message.success('删除成功');
-								this.delVisible = false;
-								this.deleteIdArr = [];
-							}
-						})
+				this.$axios({
+					method:"post",
+					url:this.apiUrl+'/client/api/flag/deleteByIds',
+					data:{
+						ids:this.deleteIdArr,
+						_method:'delete'
+					},
+					transformRequest: [function (data) {
+						let ret = ''
+						for (let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+						return ret
+					}],
+				}).then((res)=>{
+						this.getData();
+						this.tableData.splice(this.idx, 1);
+						this.$message.success('删除成功');
+						this.delVisible = false;
+						this.deleteIdArr = [];
+				})
 			},
 			// 移除文件
 			handleRemove(file, fileList) {
@@ -364,7 +224,24 @@
 			  },
 			// 新增
 			addAction(){
-				this.addVisible = true;
+				 this.$prompt("请输入标签名称", "提示", {
+					confirmButtonText: "确定",
+					cancelButtonText: "取消"
+				}).then(({ value }) => {
+					this.$axios
+					.post(
+						this.apiUrl +
+						"/client/api/flag/add?name=" + value 
+					)
+					.then(res => {
+						if(res.status == 200){
+							this.$message.success("添加成功!");
+							this.getData();
+						}else{
+							this.$message.error("添加失败！");
+						}
+					});
+				});
 			},
 			// 切换页码
 			handleSizeChange(val) {
@@ -372,23 +249,20 @@
 				this.filterDate();
 			},
 			filterDate() {
-				this.$axios
-				.get(
+				this.$axios.get(
 					this.apiUrl +
-					"/g01jfsc_zk65m/exchange_order/getExchangeOrderList?page_size=" +
+					"/client/api/flag/findPage?size=" +
 					this.pageSize +
-					"&index=" +
+					"&page=" +
 					this.filter_page+
-					"&keyword="+
+					"&name="+
 					this.select_word+
-					"&status="+
-					this.select_cate
+					'&sort=id,desc'
 				)
 				.then(res => {
 					console.log(res);
-					this.tableData = res.data.data.list;
-					this.totalNum = res.data.data.totalElements;
-					this.pageSize = res.data.data.pageSize;
+					this.tableData = res.data.content;
+					this.totalNum = res.data.totalElements;
 				});
 			
 			},

@@ -31,9 +31,9 @@
 				</el-table-column>
 				<el-table-column prop="email" label="邮箱地址"  align="center" width="200">
 				</el-table-column>
-				<el-table-column prop="type" label="公司名称"  align="center">
+				<el-table-column prop="memberExt.company" label="公司名称"  align="center">
 				</el-table-column>
-				<el-table-column prop="createTime" label="项目名称"  align="center">
+				<el-table-column prop="memberExt.projectName" label="项目名称"  align="center">
 				</el-table-column>
 				<el-table-column prop="status" label="状态"  align="center">
 				</el-table-column>
@@ -57,7 +57,7 @@
 
 		<!-- 查看详情弹出框 -->
 		<el-dialog title="用户详情" :visible.sync="editVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
+			<el-form ref="form" :model="form" label-width="150px" :disabled="true">
 				<el-form-item label="用户名">
 					<div class="form-label">{{form.username}}</div>
 				</el-form-item> 
@@ -67,29 +67,26 @@
 				<el-form-item label="邮箱">
 					<div class="form-label">{{form.email}}</div>
 				</el-form-item> 
-				<el-form-item label="真实姓氏">
-					<div class="form-label">{{form.realName}}</div>
+				<el-form-item label="公司名称">
+					<div class="form-label">{{form.company}}</div>
 				</el-form-item> 
-				<el-form-item label="出生年月">
-					<div class="form-label">{{form.birthday}}</div>
+				<el-form-item label="营业执照">
+					<div class="form-label">{{form.businessLicence}}</div>
 				</el-form-item> 
-				<el-form-item label="性别">
-					<div class="form-label">{{form.sex}}</div>
+				<el-form-item label="公司地址">
+					<div class="form-label">{{form.address}}</div>
 				</el-form-item> 
-				<el-form-item label="毕业院校">
-					<div class="form-label">{{form.graduate}}</div>
+				<el-form-item label="项目名称">
+					<div class="form-label">{{form.projectName}}</div>
 				</el-form-item>
-				<el-form-item label="从业年限">
-					<div class="form-label">{{form.workTime}}</div>
+				<el-form-item label="使用者姓名">
+					<div class="form-label">{{form.username}}</div>
 				</el-form-item>
-				<el-form-item label="擅长领域">
-					<div class="form-label">{{form.personnelTypes}}</div>
+				<el-form-item label="使用者联系方式">
+					<div class="form-label">{{form.phoneNum}}</div>
 				</el-form-item>
-				<el-form-item label="身份">
-					<div class="form-label">{{form.type}}</div>
-				</el-form-item>
-				<el-form-item label="标签">
-					<div class="form-label">{{form.flags}}</div>
+				<el-form-item label="使用者邮箱">
+					<div class="form-label">{{form.email}}</div>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
@@ -98,27 +95,6 @@
 			</span>
 		</el-dialog>
 		
-		<!-- 查看项目弹出框 -->
-		<el-dialog title="项目经验" :visible.sync="projectVisible" width="620px">
-			<el-form ref="form" :model="projectInfos" label-width="100px">
-				<el-collapse v-model="activeName">
-				  <el-collapse-item :title="item.name" v-for="item in projectInfos" v-bind:key="item.id" class="projectTitle">
-				    <div>项目类型：{{item.platformType}}</div>
-				    <div>业主描述：{{item.ownerDescription}}</div>
-				    <div>项目落成时间：{{item.finishDate}}</div>
-				    <div>项目所在地：{{item.city}}</div>
-				    <div>项目规模：{{item.scale}}</div>
-				    <div>项目角色：{{item.role}}</div>
-				    <div>参与时间：{{item.startDate}} 至 {{item.endDate}}</div>
-				  </el-collapse-item>
-				 
-				</el-collapse>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="projectVisible = false">取 消</el-button>
-				<el-button type="primary" @click="projectVisible = false">确 定</el-button>
-			</span>
-		</el-dialog>
 		
 		<!-- 修改状态弹出框 -->
 		<el-dialog title="修改状态" :visible.sync="modifyVisible" width="620px">
@@ -143,47 +119,7 @@
 			</span>
 		</el-dialog>
 		
-		<!-- 设置标签弹出框 -->
-		<el-dialog title="设置标签" :visible.sync="flagVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" @submit.native.prevent>
-				<p class="tag-title">已有标签</p>
-				<el-tag
-					v-for="tag in currentTags"
-					:key="tag.index"
-					v-model="currentTags"
-					:disable-transitions="false"
-					closable
-					@close="handleClose(tag)">
-					{{tag}}
-				</el-tag>
-				<el-input
-				class="input-new-tag"
-				v-if="inputVisible"
-				v-model="inputValue"
-				ref="saveTagInput"
-				size="small"
-				@keyup.enter.native="$event.target.blur"
-				@blur="handleInputConfirm"
-				>
-				</el-input>
-				<el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
-				<p class="tag-title">可选标签</p>
-				<el-tag
-					v-for="tag in tags"
-					:key="tag.index"
-					v-model="tags"
-					size="medium"
-					@click.native="tagClick(tag)"
-					type="info">
-					{{tag}}
-				</el-tag>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="flagVisible = false">取 消</el-button>
-				<el-button type="primary" @click="saveFlagChange">确 定</el-button>
-			</span>
-		</el-dialog>
-		
+	
 		<!-- 删除提示框 -->
 		<el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
 			<div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
@@ -340,14 +276,10 @@
 								username:res.data.username,
 								phoneNum:res.data.phoneNum,
 								email:res.data.email,
-								realName:res.data.memberExt.realName,
-								birthday:res.data.memberExt.birthday,
-								sex:res.data.memberExt.sex?"男":"女",
-								workTime:res.data.memberExt.workTime,
-								graduate:res.data.memberExt.graduateInstitutions,
-								personnelTypes:res.data.memberExt.personnelTypes,
-								type:res.data.type,
-								flags:res.data.memberExt.flags
+								company:res.data.memberExt.company,
+								businessLicence:res.data.memberExt.businessLicence,
+								address:res.data.memberExt.address,
+								projectName:res.data.memberExt.projectName
 							}
 							for (var key in this.userTypes) {
 								if (key == this.form.type) {
@@ -546,7 +478,6 @@
 					}
 					this.tableData = res.data.content;
 					this.totalNum = res.data.totalElements;
-					this.pageSize = res.data.size;
 				});
 			
 			},
