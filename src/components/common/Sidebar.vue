@@ -50,6 +50,11 @@ export default {
         },
         {
           icon: "el-icon-tickets",
+          index: "pm",
+          title: "项目经理管理"
+        },
+        {
+          icon: "el-icon-tickets",
           index: "admin",
           title: "管理员管理"
         },
@@ -87,6 +92,11 @@ export default {
           icon: "el-icon-tickets",
           index: "tag",
           title: "标签管理"
+        },
+         {
+          icon: "el-icon-tickets",
+          index: "capital",
+          title: "资金管理"
         },
       ]
     };

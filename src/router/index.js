@@ -25,6 +25,10 @@ export default new Router({
                     component: resolve => require(['../components/page/BaseFirstParty.vue'], resolve),
                     meta: { title: '甲方管理' }
                 },{
+                    path: '/pm',
+                    component: resolve => require(['../components/page/BasePM.vue'], resolve),
+                    meta: { title: '项目经理管理' }
+                },{
                     path: '/admin',
                     component: resolve => require(['../components/page/BaseAdmin.vue'], resolve),
                     meta: { title: '管理员管理' }
@@ -56,6 +60,10 @@ export default new Router({
                     path: '/tag',
                     component: resolve => require(['../components/page/BaseTag.vue'], resolve),
                     meta: { title: '标签管理' }
+                },{
+                    path: '/capital',
+                    component: resolve => require(['../components/page/BaseCapital.vue'], resolve),
+                    meta: { title: '资金管理' }
                 }
                
             ]
