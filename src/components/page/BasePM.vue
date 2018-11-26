@@ -305,7 +305,7 @@
 				this.select_username="";
 				this.select_phone="";
 				this.select_email="";
-				this.url = this.apiUrl+'/client/api/member/findPage?type=freeDesigner';
+				this.url = this.apiUrl+'/client/api/member/findPage?type=projectManager';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
 					this.tableData = res.data.content;

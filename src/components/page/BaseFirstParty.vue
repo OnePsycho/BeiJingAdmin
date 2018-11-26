@@ -197,7 +197,7 @@
 		  watch: {
 			//监听路由变化
 			$route(to) {
-			if (to.path == "/exchange") {
+			if (to.path == "/firstparty") {
 				this.getData(); //当前页面展示即刷新数据
 			}
 			}
