@@ -30,7 +30,7 @@
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
 				<el-table-column prop="id" label="编号"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="username" label="用户名"  align="center">
+				<el-table-column prop="memberExt.u_name" label="用户名"  align="center">
 				</el-table-column>
 				<el-table-column prop="phoneNum" label="手机号"  align="center" width="120">
 				</el-table-column>
@@ -264,7 +264,7 @@
 		  watch: {
 			//监听路由变化
 			$route(to) {
-			if (to.path == "/exchange") {
+			if (to.path == "/user") {
 				this.getData(); //当前页面展示即刷新数据
 			}
 			}
@@ -340,9 +340,9 @@
 					if(res.status==200){
 						this.$nextTick(function(){
 							this.form = {
-								username:res.data.username,
-								phoneNum:res.data.phoneNum,
-								email:res.data.email,
+								username:res.data.memberExt.u_name,
+								phoneNum:res.data.memberExt.u_phoneNum,
+								email:res.data.memberExt.u_email,
 								realName:res.data.memberExt.realName,
 								birthday:res.data.memberExt.birthday,
 								sex:res.data.memberExt.sex?"男":"女",
