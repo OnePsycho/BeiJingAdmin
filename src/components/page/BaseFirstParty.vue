@@ -13,7 +13,7 @@
 					<el-option key="2" label="审核中" value="checkPending"></el-option>
 					<el-option key="3" label="未通过" value="refused"></el-option>
 				</el-select>
-				<el-input v-model="select_username" placeholder="用户名" class="handle-input mr10" @input="select_word_change"></el-input>
+				<!-- <el-input v-model="select_username" placeholder="用户名" class="handle-input mr10" @input="select_word_change"></el-input> -->
 				<el-input v-model="select_phone" placeholder="手机号" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-input v-model="select_email" placeholder="邮箱" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
@@ -58,9 +58,9 @@
 		<!-- 查看详情弹出框 -->
 		<el-dialog title="用户详情" :visible.sync="editVisible" width="620px">
 			<el-form ref="form" :model="form" label-width="150px" :disabled="true">
-				<el-form-item label="用户名">
+				<!-- <el-form-item label="用户名">
 					<div class="form-label">{{form.username}}</div>
-				</el-form-item> 
+				</el-form-item>  -->
 				<el-form-item label="手机号">
 					<div class="form-label">{{form.phoneNum}}</div>
 				</el-form-item> 
@@ -71,7 +71,7 @@
 					<div class="form-label">{{form.company}}</div>
 				</el-form-item> 
 				<el-form-item label="营业执照">
-					<div class="form-label">{{form.businessLicence}}</div>
+					<img :src="form.businessLicence" style="width:200px;height:300px;border:3px solid #b5b5b5">
 				</el-form-item> 
 				<el-form-item label="公司地址">
 					<div class="form-label">{{form.address}}</div>
@@ -80,13 +80,13 @@
 					<div class="form-label">{{form.projectName}}</div>
 				</el-form-item>
 				<el-form-item label="使用者姓名">
-					<div class="form-label">{{form.username}}</div>
+					<div class="form-label">{{form.u_name}}</div>
 				</el-form-item>
 				<el-form-item label="使用者联系方式">
-					<div class="form-label">{{form.phoneNum}}</div>
+					<div class="form-label">{{form.u_phoneNum}}</div>
 				</el-form-item>
 				<el-form-item label="使用者邮箱">
-					<div class="form-label">{{form.email}}</div>
+					<div class="form-label">{{form.u_email}}</div>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
@@ -102,9 +102,9 @@
 				<el-form-item label="编号" prop="product_category_name">
 					<div class="form-label">{{form.id}}</div>
 				</el-form-item>
-				<el-form-item label="用户名" prop="product_category_name">
+				<!-- <el-form-item label="用户名" prop="product_category_name">
 					<div class="form-label">{{form.username}}</div>
-				</el-form-item>
+				</el-form-item> -->
 				<el-form-item label="修改状态" prop="status">
 					<el-select v-model="form.status" placeholder="请选择">
 					<el-option key="1" label="审核中" value="checkPending"></el-option>
@@ -143,6 +143,7 @@
 				cur_page: 0,
 				filter_page:0,
 				apiUrl:domain.apiUrl,
+				apiImgUrl:domain.apiImgUrl,
 				multipleSelection: [],
 				select_type: '',
 				select_status:'',
@@ -273,13 +274,15 @@
 					if(res.status==200){
 						this.$nextTick(function(){
 							this.form = {
-								username:res.data.username,
 								phoneNum:res.data.phoneNum,
 								email:res.data.email,
 								company:res.data.memberExt.company,
-								businessLicence:res.data.memberExt.businessLicence,
+								businessLicence:this.apiImgUrl+res.data.memberExt.businessLicence,
 								address:res.data.memberExt.address,
-								projectName:res.data.memberExt.projectName
+								projectName:res.data.memberExt.projectName,
+								u_name:res.data.memberExt.u_name,
+								u_phoneNum:res.data.memberExt.u_phoneNum,
+								u_email:res.data.memberExt.u_email,
 							}
 							for (var key in this.userTypes) {
 								if (key == this.form.type) {

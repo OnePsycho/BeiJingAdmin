@@ -30,8 +30,6 @@
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
 				<el-table-column prop="id" label="编号"  align="center" width="80">
 				</el-table-column>
-				<el-table-column prop="memberExt.u_name" label="用户名"  align="center">
-				</el-table-column>
 				<el-table-column prop="phoneNum" label="手机号"  align="center" width="120">
 				</el-table-column>
 				<el-table-column prop="email" label="邮箱地址"  align="center" width="200">
@@ -39,6 +37,8 @@
 				<el-table-column prop="status" label="状态"  align="center" width="80">
 				</el-table-column>
 				<el-table-column prop="createTime" label="注册时间"   align="center">
+				</el-table-column>
+				<el-table-column prop="loginTime" label="最近登录"  align="center">
 				</el-table-column>
 				<el-table-column label="操作" align="center" width="500px">
 					<template slot-scope="scope">
@@ -104,10 +104,13 @@
 		<!-- 查看项目弹出框 -->
 		<el-dialog title="项目经验" :visible.sync="projectVisible" width="620px">
 			<el-form ref="form" :model="projectInfos" label-width="100px">
-				<el-collapse v-model="activeName">
+				<el-collapse v-model="activeName" v-if="projectInfos.length > 0">
 				  <el-collapse-item :title="item.name" v-for="item in projectInfos" v-bind:key="item.id" class="projectTitle">
-				    <div>项目类型：{{item.platformType}}</div>
-				    <div>业主描述：{{item.ownerDescription}}</div>
+				    <div>项目类型：{{item.platformType.name}}</div>
+				    <div>业主名称：{{item.ownerName}}</div>
+				    <div>业主级别：{{item.ownerLevel}}</div>
+				    <div>资产规模：{{item.assetScale}}</div>
+				    <div>业主成功案例：{{item.ownerCases}}</div>
 				    <div>项目落成时间：{{item.finishDate}}</div>
 				    <div>项目所在地：{{item.city}}</div>
 				    <div>项目规模：{{item.scale}}</div>
@@ -116,6 +119,7 @@
 				  </el-collapse-item>
 				 
 				</el-collapse>
+				<p v-else>暂无项目经验</p>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="projectVisible = false">取 消</el-button>
@@ -339,6 +343,10 @@
 					console.log(res);
 					if(res.status==200){
 						this.$nextTick(function(){
+							let personnelTypes = [];
+							for(let i=0;i<res.data.memberExt.personnelTypes.length;i++){
+								personnelTypes.push(res.data.memberExt.personnelTypes[i].name);
+							}
 							this.form = {
 								username:res.data.memberExt.u_name,
 								phoneNum:res.data.memberExt.u_phoneNum,
@@ -348,7 +356,7 @@
 								sex:res.data.memberExt.sex?"男":"女",
 								workTime:res.data.memberExt.workTime,
 								graduate:res.data.memberExt.graduateInstitutions,
-								personnelTypes:res.data.memberExt.personnelTypes,
+								personnelTypes:personnelTypes.join(','),
 								type:res.data.type,
 								flags:res.data.memberExt.flags
 							}
@@ -373,6 +381,9 @@
 						this.$nextTick(function(){
 							this.projectInfos = res.data.projectInfos;
 						})
+							
+
+
 							this.projectVisible = true;
 					}
 				})
@@ -387,7 +398,7 @@
 					if(res.status==200){
 						this.$nextTick(function(){
 							this.form = {
-								username:res.data.username,
+								username:res.data.memberExt.u_name,
 								type:res.data.type,
 								status:res.data.status,
 								id:res.data.id

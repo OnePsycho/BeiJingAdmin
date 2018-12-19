@@ -58,7 +58,7 @@
 				<el-form-item label="类型" prop="type">
 					<el-select v-model="formAdd.type">
 					<el-option key="1" label="方案" value="scheme"></el-option>
-					<el-option key="2" label="设计图" value="workingDrawing"></el-option>
+					<el-option key="2" label="施工图" value="workingDrawing"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
@@ -260,6 +260,7 @@ export default {
             }
             data.platformTypes.push(newChild);
             this.$message.success("添加成功!");
+            this.activePlatform = data.type;
           });
       });
     },
@@ -355,7 +356,14 @@ export default {
           this.$axios.post(this.apiUrl + url, f).then(res => {
             if (res.status == 200) {
               this.$message.success("添加成功!");
-              this.getData();
+              // this.getData();
+              if(this.addType == "person"){
+                   this.activePerson = this.formAdd.type;
+                    this.handleClick({name:this.formAdd.type});
+              }else{
+                 this.activePlatform = this.formAdd.type;
+                  this.handleClickPlatform({name:this.formAdd.type});
+              }
               this.addVisible = false;
               this.formAdd = {};
             }

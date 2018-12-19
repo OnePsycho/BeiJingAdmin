@@ -80,6 +80,7 @@
 				</el-form-item>
 				<el-form-item label="问题分类" prop="platformId" width="600px">
 					<el-cascader
+					ref="cascaderAdd"
 					:options="options"
 					:props="props"
 					v-model="formAdd.platformId"
@@ -95,13 +96,16 @@
 					 end-placeholder="结束日期">
 					</el-date-picker>
 				</el-form-item>
-				<el-form-item label="问题状态" prop="status">
+				<el-form-item label="问题公告" prop="notice">
+					<el-input v-model="formAdd.notice"></el-input>
+				</el-form-item>
+				<!-- <el-form-item label="问题状态" prop="status">
 					<el-select v-model="formAdd.status" placeholder="请选择">
 					<el-option key="1" label="审核中" value="checkPending"></el-option>
 					<el-option key="2" label="正常" value="normal"></el-option>
 					<el-option key="3" label="未通过" value="refused"></el-option>
 					</el-select>
-				</el-form-item>
+				</el-form-item> -->
 				<el-form-item label="上传附件" prop="link">
 					<el-upload
 						class="upload-demo"
@@ -157,13 +161,16 @@
 					 end-placeholder="结束日期">
 					</el-date-picker>
 				</el-form-item>
-				<el-form-item label="问题状态" prop="status">
+				<el-form-item label="问题公告" prop="notice">
+					<el-input v-model="form.notice"></el-input>
+				</el-form-item>
+				<!-- <el-form-item label="问题状态" prop="status">
 					<el-select v-model="form.status" placeholder="请选择">
 					<el-option key="1" label="审核中" value="checkPending"></el-option>
 					<el-option key="2" label="正常" value="normal"></el-option>
 					<el-option key="3" label="未通过" value="refused"></el-option>
 					</el-select>
-				</el-form-item>
+				</el-form-item> -->
 				<el-form-item label="上传附件">
 					<el-upload
 						class="upload-demo"
@@ -262,11 +269,12 @@
 				rules: {
 					title: [
 					{ required: true, trigger: "blur", message: "标题不能为空" },
-					{ min: 1, max: 20, message: "长度在 1 到 20 个文字", trigger: "blur" }
+					{ min: 1, max: 50, message: "长度在 1 到 50 个文字", trigger: "blur" }
 					],
 					project_name:[{ required: true, trigger: "blur", message: "项目名称不能为空"}],
 					reward:[{ required: true, trigger: "blur", message: "赏金不能为空"}],
 					joinNum:[{ required: true, trigger: "blur", message: "参与人数不能为空"}],
+					notice:[{ required: true, trigger: "blur", message: "公告内容不能为空"}],
 					platformId:[{ required: true, trigger: "blur", message: "请选择问题分类"}],
 					description:[{ required: true, trigger: "blur", message: "商品描述不能为空"}],
 					timePickerValue: [{ required: true, message: "日期不能为空", trigger: "change" }],
@@ -414,6 +422,7 @@
 								platformId:res.data.platformType.id,
 								platformTypeIds:res.data.platformTypeIds,
 								status:res.data.status,
+								notice:res.data.notice
 							}
 							this.showFileList = res.data.attachments;
 							for (let index = 0; index < res.data.attachments.length; index++) {
@@ -463,10 +472,7 @@
 				if(length==0){
 					this.$message.error('请选择删除项！');
 				}else{
-					let str = '';
-					this.del_list = this.del_list.concat(this.multipleSelection);
 					for (let i = 0; i < length; i++) {
-						str += this.multipleSelection[i].order_code + ' ';
 						this.deleteIdArr.push(this.multipleSelection[i].id);
 					}
 					this.$axios({
@@ -663,6 +669,7 @@
 					formData.append("reward", this.formAdd.reward);
 					formData.append("joinNum", this.formAdd.joinNum);
 					formData.append("status", this.formAdd.status);
+					formData.append("notice", this.formAdd.notice);
 					for (let index = 0; index < this.extraFileList.length; index++) {
 						formData.append("attachments", this.extraFileList[index]);
 					}
@@ -705,6 +712,7 @@
 					formData.append("reward", this.form.reward);
 					formData.append("joinNum", this.form.joinNum);
 					formData.append("status", this.form.status);
+					formData.append("notice", this.form.notice);
 					formData.append("_method", 'PUT');
 					formData.append("id", this.currentId);
 					for (let index = 0; index < this.attachmentsIds.length; index++) {
