@@ -10,55 +10,59 @@
 			<div class="handle-box">
 				<el-card class="box-card" style="background:#67C23A">
 					<div class="capital-item" >
-						总金额：￥5000000
+						总金额：￥{{total}}
 					</div>
 				</el-card>
 				<el-card class="box-card" style="background:#E6A23C">
 					<div class="capital-item">
-						待提现金额：￥60000
+						赏金发放金额：￥{{bounty}}
 					</div>
 				</el-card>
 				<el-card class="box-card" style="background:#F56C6C">
 					<div class="capital-item">
-						已提现金额：￥352000
+						已提现金额：￥{{rawCash}}
 					</div>
 				</el-card>
 				<el-card class="box-card" style="background:#909399">
 					<div class="capital-item">
-						剩余金额：￥1236600
+						剩余金额：￥{{balance}}
 					</div>
 				</el-card>
 			</div>
 			<div class="handle-box">
-				<el-select v-model="select_status" placeholder="资金状态" class="handle-select mr10" @change="selectChange">
-					<el-option key="1" label="充值" value="normal"></el-option>
-					<el-option key="2" label="待提现" value="checkPending"></el-option>
-					<el-option key="3" label="已提现" value="refused"></el-option>
+				<el-select v-model="select_status" placeholder="资金类别" class="handle-select mr10" @change="selectChange">
+					<el-option key="1" label="赏金" value="bountyRecord"></el-option>
+					<el-option key="2" label="充值" value="recharge"></el-option>
+					<el-option key="3" label="提现" value="withdrawCash"></el-option>
 				</el-select>
-				<el-input v-model="select_word" placeholder="用户名筛选" class="handle-input mr10" @input="select_word_change"></el-input>
-				<el-date-picker
+				<el-input v-model="select_phone" placeholder="手机号查询" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-input v-model="select_email" placeholder="邮箱查询" class="handle-input mr10" @input="select_word_change"></el-input>
+				 <el-date-picker
 					v-model="value5"
 					type="datetimerange"
-         			 @input="select_word_change"
+					@input="select_word_change"
 					:picker-options="pickerOptions2"
-					range-separator="至"
 					value-format="yyyy-MM-dd HH:mm:ss"
+					range-separator="至"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
 					align="right">
-				</el-date-picker>
+					</el-date-picker>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
 			</div>
-			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55" align="center"></el-table-column>
-				<el-table-column prop="name" label="用户名" align="center">
+			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe>
+				<el-table-column prop="id" label="编号" align="center" width="100">
 				</el-table-column>
-				<el-table-column prop="name" label="金额" align="center">
+				<el-table-column prop="member.phoneNum" label="账号" align="center">
 				</el-table-column>
-				<el-table-column prop="name" label="分类" align="center">
+				<el-table-column prop="amount" label="金额" sortable align="center">
 				</el-table-column>
-				<el-table-column prop="createTime" label="项目发布时间" align="center">
+				<el-table-column prop="type" label="分类" align="center">
+				</el-table-column>
+				<el-table-column prop="no" label="订单号" align="center" width="350">
+				</el-table-column>
+				<el-table-column prop="createTime" label="创建时间" align="center">
 				</el-table-column>
 			</el-table>
 			<div class="pagination">
@@ -69,14 +73,7 @@
 			</div>
 		</div>
 
-		<!-- 删除提示框 -->
-		<el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-			<div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="delVisible = false">取 消</el-button>
-				<el-button type="primary" @click="deleteRow">确 定</el-button>
-			</span>
-		</el-dialog>
+	
 	</div>
 </template>
 
@@ -88,20 +85,16 @@
 			return {
 				url: '',
 				tableData: [],
-				activeName:1,
 				cur_page: 1,
 				select_page:1,
 				filter_page:1,
 				apiUrl:domain.apiUrl,
-				multipleSelection: [],
 				select_cate: '',
-				select_word: '',
+				select_phone: '',
+				select_email: '',
 				select_status:'',
 				del_list: [],
 				is_search: false,
-				delVisible: false,
-				dialogImageUrl: '',
-				dialogVisible: false,
 				content: '',
 				timePickerValue: [],
 				form: {},
@@ -142,8 +135,17 @@
 				}
 				]
 			},
-			value5: "",
-				}
+			value5: ["",""],
+			types:{
+				'recharge': '充值',
+				'bountyRecord': '赏金',
+				'withdrawCash': '提现'
+				},
+			total:0,
+			rawCash:0,
+			bounty:0,
+			balance:0
+			}
 		},
 		created() {
 			this.getData();
@@ -184,156 +186,67 @@
 
 			// 获取信息
 			getData() {
-				this.select_word="";
-				this.url = this.apiUrl+'/client/api/flag/findPage?size='+this.pageSize+'&page='+this.filter_page+'&sort=id,desc';
+				var that = this;
+				this.select_status="";
+				this.select_phone="";
+				this.select_email="";
+				this.url = this.apiUrl+'/client/api/capitalDetail/findPage?size='+this.pageSize+'&page='+this.filter_page+'&sort=id,desc';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
+					for (var key in this.types) {
+						for (var i = 0; i < res.data.content.length; i++) {
+								if (key == res.data.content[i].type) {
+									res.data.content[i].type = this.types[key];
+								}
+							}
+						}
 					this.tableData = res.data.content;
 					this.loading = false;
 					this.totalNum = res.data.totalElements;
 				})
+				this.$axios.get(this.apiUrl+'/client/api/capitalDetail/findCount').then((res) => {
+					console.log(res);
+					that.total = res.data.total;
+					that.rawCash =  res.data.rawCash;
+					that.bounty =  res.data.bounty;
+					that.balance =  res.data.balance;
+				})
 			},
 		
-			// 修改昵称
-			handleModify(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.$prompt("请输入修改后的标签名称", "提示", {
-					confirmButtonText: "确定",
-					cancelButtonText: "取消"
-				}).then(({ value }) => {
-					let f = new FormData();
-					f.append("id", id);
-					f.append("_method", "PUT");
-					f.append("name", value);
-					this.$axios
-					.post(this.apiUrl + "/client/api/flag/update", f)
-					.then(res => {
-						if (res.status == 200) {
-						this.getData();
-						this.$message.success("修改成功!");
-						} else {
-						this.$message.error("修改失败!");
-						}
-					});
-				});
-			},
-
-			// 删除信息
-			handleDelete(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.delVisible = true;
-			},
-			// 批量删除
-			delAll() {
-				this.deleteIdArr =[];
-				const length = this.multipleSelection.length;
-				if(length==0){
-					this.$message.error('请选择删除项！');
-				}else{
-					let str = '';
-					this.del_list = this.del_list.concat(this.multipleSelection);
-					for (let i = 0; i < length; i++) {
-						str += this.multipleSelection[i].order_code + ' ';
-						this.deleteIdArr.push(this.multipleSelection[i].id);
-					}
-					this.$axios({
-					method:"post",
-					url:this.apiUrl+'/client/api/flag/deleteByIds',
-					data:{
-						ids:this.deleteIdArr,
-						_method:'delete'
-					},
-					transformRequest: [function (data) {
-						let ret = ''
-						for (let it in data) {
-						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-						}
-						return ret
-					}],
-				}).then((res)=>{
-						this.getData();
-						this.tableData.splice(this.idx, 1);
-						this.$message.success('删除成功');
-						this.delVisible = false;
-						this.deleteIdArr = [];
-				})
-					
-				}
-			},
-			// 表格选择
-			handleSelectionChange(val) {
-				this.multipleSelection = val;
-			},
-			// 确定删除
-			deleteRow() {
-				this.deleteIdArr.push(this.currentId);
-				this.$axios({
-					method:"post",
-					url:this.apiUrl+'/client/api/flag/deleteByIds',
-					data:{
-						ids:this.deleteIdArr,
-						_method:'delete'
-					},
-					transformRequest: [function (data) {
-						let ret = ''
-						for (let it in data) {
-						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-						}
-						return ret
-					}],
-				}).then((res)=>{
-						this.getData();
-						this.tableData.splice(this.idx, 1);
-						this.$message.success('删除成功');
-						this.delVisible = false;
-						this.deleteIdArr = [];
-				})
-			},
-			// 移除文件
-			handleRemove(file, fileList) {
-				console.log(file, fileList);
-			  },
-			// 新增
-			addAction(){
-				 this.$prompt("请输入标签名称", "提示", {
-					confirmButtonText: "确定",
-					cancelButtonText: "取消"
-				}).then(({ value }) => {
-					this.$axios
-					.post(
-						this.apiUrl +
-						"/client/api/flag/add?name=" + value 
-					)
-					.then(res => {
-						if(res.status == 200){
-							this.$message.success("添加成功!");
-							this.getData();
-						}else{
-							this.$message.error("添加失败！");
-						}
-					});
-				});
-			},
 			// 切换页码
 			handleSizeChange(val) {
 				this.pageSize = val;
 				this.filterDate();
 			},
 			filterDate() {
+				var timeRange = this.value5;
+				console.log(timeRange);
 				this.$axios.get(
 					this.apiUrl +
-					"/client/api/flag/findPage?size=" +
+					"/client/api/capitalDetail/findPage?size=" +
 					this.pageSize +
 					"&page=" +
 					this.filter_page+
-					"&name="+
-					this.select_word+
+					"&phoneNum="+
+					this.select_phone+
+					"&email="+
+					this.select_email+
+					"&type="+
+					this.select_status+
+					"&startTime="+
+					this.value5[0]+
+					"&endTime="+
+					this.value5[1]+
 					'&sort=id,desc'
 				)
 				.then(res => {
-					console.log(res);
+					for (var key in this.types) {
+						for (var i = 0; i < res.data.content.length; i++) {
+								if (key == res.data.content[i].type) {
+									res.data.content[i].type = this.types[key];
+								}
+							}
+						}
 					this.tableData = res.data.content;
 					this.totalNum = res.data.totalElements;
 				});

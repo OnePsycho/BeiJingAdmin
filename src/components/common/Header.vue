@@ -46,6 +46,7 @@
                 fullscreen: false,
                 name: 'linxin',
                 message: 2,
+                apiUrl:domain.apiUrl,
 				screenWidth:0
             }
         },
@@ -59,8 +60,18 @@
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
-                    this.$router.push('/login');
+                    	this.$axios.post(this.apiUrl+'/logout').then((res) => {
+                            console.log(res);
+                            if(res.data.status == 200){
+                                this.$message.success("退出成功!");
+                                localStorage.removeItem('ms_username')
+                                this.$router.push('/login');
+                            }else{
+                                 this.$message.error("退出失败!");
+                            }
+							
+						})
+
                 }
             },
             // 侧边栏折叠

@@ -18,6 +18,7 @@
 				multiple
 				:file-list="imgList"
 				:on-preview="handlePictureCardPreview"
+				:before-upload="beforeAvatarUpload"
 				:http-request="uploadAvatar"
 				:on-remove="handleRemove">
 				<i class="el-icon-plus"></i>
@@ -26,7 +27,7 @@
 			<div class="pagination">
 				<el-pagination background @current-change="handleCurrentChange"
 					@size-change="handleSizeChange"  :current-page="cur_page"
-					layout="total, sizes, prev, pager, next, jumper" :total="totalNum" align="center" :page-sizes="[5, 10, 15, 20]">
+					layout="total, sizes, prev, pager, next, jumper" :total="totalNum" align="center" :page-sizes="[100]">
 				</el-pagination>
 			</div>
 		</div>
@@ -55,7 +56,7 @@
 				form: {},
 				loading:true,
 				totalNum:0,
-				pageSize:10,
+				pageSize:100,
 				currentId:0,
 				deleteIdArr:[],
 				imageUrl: '',
@@ -86,10 +87,12 @@
 			beforeAvatarUpload(file) {
 				console.log(file);
 				const isJPG = file.type === 'image/jpeg';
+				const isPNG = file.type === 'image/png';
+				const isBMP = file.type === 'image/bmp';
 				const isLt2M = file.size / 1024 / 1024 < 2;
 
-				if (!isJPG) {
-				this.$message.error('上传头像图片只能是 JPG 格式!');
+				if (!isJPG && !isPNG && !isBMP) {
+				this.$message.error('头像图片只支持jpg,png,bmp格式哦!');
 				}
 				if (!isLt2M) {
 				this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -160,12 +163,12 @@
 				this.filterDate();
 			},
 			uploadAvatar(res){
-				console.log(res);
 				var formData = new FormData();
 				formData.append("file", res.file);
 				this.$axios.post(this.apiUrl + "/client/api/file/upload", formData).then(res => {
 					if(res.status==200){
-						this.$axios.post(this.apiUrl + "/client/api/nicknameAndHeadImg/add?headImg="+res.data).then(response => {
+						console.log(res);
+						this.$axios.post(this.apiUrl + "/client/api/nicknameAndHeadImg/add?headImg="+res.data.data).then(response => {
 							if(response.status == 200){
 								this.$message.success("上传成功");
 							}

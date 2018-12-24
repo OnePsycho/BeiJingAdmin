@@ -10,15 +10,15 @@
 			<div class="handle-box">
 				<el-select v-model="select_type" placeholder="用户身份" class="handle-select mr10" @change="selectChange">
 					<el-option key="1" label="甲方" value="firstParty"></el-option>
-					<el-option key="2" label="研究院" value="designingInstitute"></el-option>
-					<el-option key="3" label="自由设计师" value="freeDesigner"></el-option>
+					<!-- <el-option key="2" label="研究院" value="designingInstitute"></el-option> -->
+					<el-option key="3" label="设计师" value="freeDesigner"></el-option>
 				</el-select>
 				<el-select v-model="select_status" placeholder="用户状态" class="handle-select mr10" @change="selectChange">
 					<el-option key="1" label="正常" value="normal"></el-option>
 					<el-option key="2" label="审核中" value="checkPending"></el-option>
 					<el-option key="3" label="未通过" value="refused"></el-option>
 				</el-select>
-				<el-input v-model="select_username" placeholder="用户名" class="handle-input mr10" @input="select_word_change"></el-input>
+				<!-- <el-input v-model="select_username" placeholder="用户名" class="handle-input mr10" @input="select_word_change"></el-input> -->
 				<el-input v-model="select_phone" placeholder="手机号" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-input v-model="select_email" placeholder="邮箱" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
@@ -61,9 +61,9 @@
 		<!-- 查看详情弹出框 -->
 		<el-dialog title="用户详情" :visible.sync="editVisible" width="620px">
 			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="用户名">
+				<!-- <el-form-item label="用户名">
 					<div class="form-label">{{form.username}}</div>
-				</el-form-item> 
+				</el-form-item>  -->
 				<el-form-item label="手机号">
 					<div class="form-label">{{form.phoneNum}}</div>
 				</el-form-item> 

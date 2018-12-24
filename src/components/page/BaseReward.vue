@@ -8,37 +8,36 @@
 		</div>
 		<div class="container">
 			<div class="handle-box">
-				<el-select v-model="select_cate" placeholder="用户身份" class="handle-select mr10" @change="selectChange">
-					<el-option key="1" label="甲方" value="3"></el-option>
-					<el-option key="2" label="设计院" value="2"></el-option>
-					<el-option key="3" label="自由设计师" value="1"></el-option>
-					<el-option key="4" label="全部" value=""></el-option>
+				<el-select v-model="select_status" placeholder="状态" class="handle-select mr10" @change="selectChange">
+					<el-option key="1" label="同意发放" value="agree"></el-option>
+					<el-option key="2" label="拒绝发放" value="absurd"></el-option>
+					<el-option key="3" label="已结束" value="finish"></el-option>
 				</el-select>
-				<el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-input v-model="select_name" placeholder="项目名称" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
+				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
 				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
 
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" align="center"></el-table-column>
-				<el-table-column prop="id" label="问题标题"  align="center" width="80">
+				<el-table-column prop="title" label="问题标题"  align="center">
 				</el-table-column>
-				<el-table-column prop="username" label="所属项目"  align="center">
+				<el-table-column prop="projectName" label="所属项目"  align="center">
 				</el-table-column>
-				<el-table-column prop="phoneNum" label="赏金总金额"  align="center">
+				<el-table-column prop="reward" label="赏金总金额"  align="center" width="100">
 				</el-table-column>
-				<el-table-column prop="email" label="项目截止时间"  sortable align="center">
+				<el-table-column prop="finishDate" label="项目截止时间"  sortable align="center">
 				</el-table-column>
-				<el-table-column prop="status" label="状态"  align="center">
+				<el-table-column prop="status" label="状态"  align="center" width="100">
 				</el-table-column>
-				<el-table-column prop="phone" label="项目发布时间"   align="center">
+				<el-table-column prop="publishDate" label="项目发布时间" sortable  align="center">
 				</el-table-column>
-				<el-table-column label="操作" align="center" width="500px">
+				<el-table-column label="操作" align="center" width="400px">
 					<template slot-scope="scope">
 						<el-button type="primary" icon="el-icon-tickets" @click="handleDetails(scope.row.id,scope.$index, scope.row)">查看赏金分布</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleProjects(scope.row.id,scope.$index, scope.row)">项目经理意见</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">发放赏金</el-button>
-						<el-button type="danger" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleFinish(scope.row.id,scope.$index, scope.row)" :disabled="scope.row.status != '同意发放'">发放赏金</el-button>
+						<el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -50,78 +49,32 @@
 			</div>
 		</div>
 
-		<!-- 查看详情弹出框 -->
-		<el-dialog title="用户详情" :visible.sync="editVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="用户名" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="手机号" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="邮箱" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="真实姓氏" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="出生年月" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="性别" prop="product_name">
-					<el-label v-model="form.product_name"></el-label>
-				</el-form-item> 
-				<el-form-item label="从业年限" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="擅长领域" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="身份" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="标签" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-			</el-form>
+		<!-- 查看赏金分布弹出框 -->
+		<el-dialog title="赏金分布" :visible.sync="editVisible" width="620px">
+				<div class="reward-item" v-for="item in rewardData" v-bind:key="item.id">
+					<span class="reward-item-user">{{item.member.tempName}} :</span><span class="reward-item-reward">{{item.reward}} RMB</span>
+				</div>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="editVisible = false">取 消</el-button>
 				<el-button type="primary" @click="editVisible = false">确 定</el-button>
 			</span>
 		</el-dialog>
 
-		
-		<!-- 修改状态弹出框 -->
-		<el-dialog title="修改状态" :visible.sync="modifyVisible" width="620px">
-			<el-form ref="form" :model="form" label-width="100px" :disabled="true">
-				<el-form-item label="编号" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="用户名" prop="product_category_name">
-					<el-label v-model="form.product_category_name"></el-label>
-				</el-form-item>
-				<el-form-item label="修改状态" prop="product_category_name">
-					<el-select v-model="form.product_category_name" placeholder="请选择">
-					<el-option v-for="(item,index) in classifyList"
-					:key="index"
-					:label="item.name"
-					:value="item.name">
-					</el-option>
-					</el-select>
-				</el-form-item>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="modifyVisible = false">取 消</el-button>
-				<el-button type="primary" @click="modifyVisible = false">确 定</el-button>
-			</span>
-		</el-dialog>
 
 		<!-- 删除提示框 -->
 		<el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-			<div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+			<div class="del-dialog-cnt">删除请慎重！是否确定删除？</div>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="delVisible = false">取 消</el-button>
 				<el-button type="primary" @click="deleteRow">确 定</el-button>
+			</span>
+		</el-dialog>
+		<!-- 确认发放赏金提示框 -->
+		<el-dialog title="提示" :visible.sync="finishVisible" width="300px" center>
+			<div class="del-dialog-cnt">是否确认发放赏金？</div>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="finishVisible = false">取 消</el-button>
+				<el-button type="primary" @click="finishQuestion">确 定</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -141,14 +94,12 @@
 				filter_page:1,
 				apiUrl:domain.apiUrl,
 				multipleSelection: [],
-				select_cate: '',
-				select_word: '',
+				select_status: '',
+				select_name: '',
 				del_list: [],
 				is_search: false,
 				editVisible: false,
-				projectVisible: false,
-				flagVisible: false,
-				modifyVisible: false,
+				finishVisible: false,
 				delVisible: false,
 				dialogImageUrl: '',
 				dialogVisible: false,
@@ -164,6 +115,15 @@
 				pageSize:10,
 				currentId:0,
 				deleteIdArr:[],
+				rewardData:[],
+				questionStatus:{
+				'checkPending': '审核中',
+				'normal': '正常',
+				'refused': '未通过',
+				'agree':'同意发放',
+				'absurd':'拒绝发放',
+				'finish':'已结束'
+				},
 			}
 		},
 		created() {
@@ -216,105 +176,62 @@
 			},
 			// 获取商品信息
 			getData() {
-				this.select_cate="";
-				this.select_word="";
-				this.url = this.apiUrl+'/client/api/member/findPage';
+				this.select_status="";
+				this.select_name="";
+				this.url = this.apiUrl+'/client/api/question/findPage?size='+this.pageSize+'&page='+this.filter_page+"&sort=id,desc&status=finish&status=agree&status=absurd";
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
+					for (var key in this.questionStatus) {
+						for (var i = 0; i < res.data.content.length; i++) {
+								if (key == res.data.content[i].status) {
+									res.data.content[i].status = this.questionStatus[key];
+								}
+							}
+						}
 					this.tableData = res.data.content;
 					this.loading = false;
 					this.totalNum = res.data.totalElements;
-				})
+				}).catch(function (error) {
+					that.$message.error('网络错误，获取数据失败');
+				});
 			},
 			// 编辑信息
 			handleDetails(id,index, row) {
+				this.rewardData = [];
+				for(let i=0;i<row.memberJoinQuestions.length;i++){
+					if(row.memberJoinQuestions[i].type == "participator"){
+						this.rewardData.push(row.memberJoinQuestions[i])
+					}
+				}
+				this.editVisible = true;
 				this.idx = index;
 				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-						this.$nextTick(function(){
-							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
-							}
-						})
-							this.editVisible = true;
-						
-					}
-				})
+
 			},
-			// 查看项目经验
-			handleProjects(id,index, row) {
+			// 结束问题 同意发放赏金
+			handleFinish(id,index, row) {
+				this.finishVisible = true;
 				this.idx = index;
 				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-						this.$nextTick(function(){
-							this.form = {
-								img_list: imgList,
-								img_list_shop:imgListShop,
-								product_name: res.data.data.product_info.product_name,
-								point_needed: res.data.data.product_info.point_needed,
-								timePickerValue:[res.data.data.product_info.start_time,res.data.data.product_info.end_time],
-								start_time: res.data.data.product_info.start_time,
-								end_time: res.data.data.product_info.end_time,
-								description: res.data.data.product_info.description,
-								declaration: res.data.data.product_info.declaration,
-								product_category_name: res.data.data.product_info.product_category_name,
-								link:res.data.data.product_info.link,
-								order_code:res.data.data.order_code,
-								create_time:res.data.data.create_time
-							}
-						})
-							this.projectVisible = true;
-					}
-				})
-			},
-			// 查看项目经验
-			handleModify(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-							this.modifyVisible = true;
-						
-					}
-				})
-			},
-			// 查看项目经验
-			handleFlag(id,index, row) {
-				this.idx = index;
-				this.currentId = id;
-				this.timePickerValue = [];
-				// 点击获取商品详情
-				this.$axios.get(this.apiUrl+'/client/api/member/findById?id='+id).then((res) => {
-					if(res.status==200){
-							this.flagVisible = true;
-					}
-				})
+
 			},
 			// 删除信息
 			handleDelete(id,index, row) {
 				this.idx = index;
 				this.currentId = id;
 				this.delVisible = true;
+			},
+			finishQuestion(){
+				let f = new FormData();
+				f.append('id',this.currentId);
+				f.append('status','finish');
+				f.append('_method','PUT');
+				this.$axios.post(this.apiUrl+'/client/api/question/finishQuestion',f).then((res) => {
+					if(res){
+						this.getData();
+						this.finishVisible = false;
+					}
+				})
 			},
 			// 批量删除
 			delAll() {
@@ -351,18 +268,26 @@
 			// 确定删除
 			deleteRow() {
 				this.deleteIdArr.push(this.currentId);
-				this.$axios.post(this.apiUrl+'/g01jfsc_zk65m/exchange_order/deleteExchangeOrder',
-				{exchange_order_id: this.deleteIdArr,
-				paramsSerializer:exchange_order_id => {
-					return qs.stringify(exchange_order_id, { indices: false })}
-				}).then((res) => {
-					if(res.data.code==200){
+				this.$axios({
+					method:"post",
+					url:this.apiUrl+'/client/api/question/deleteByIds',
+					data:{
+						ids:this.deleteIdArr,
+						_method:'delete'
+					},
+					transformRequest: [function (data) {
+						let ret = ''
+						for (let it in data) {
+						ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+						}
+						return ret
+					}],
+				}).then((res)=>{
 						this.getData();
 						this.tableData.splice(this.idx, 1);
 						this.$message.success('删除成功');
 						this.delVisible = false;
 						this.deleteIdArr = [];
-					}
 				})
 			},
 			// 移除文件
@@ -379,25 +304,43 @@
 				this.filterDate();
 			},
 			filterDate() {
+				if(this.select_status==""&&this.select_name==""){
+					this.getData();
+					return;
+				}
+				let that = this;
 				this.$axios
 				.get(
 					this.apiUrl +
-					"/g01jfsc_zk65m/exchange_order/getExchangeOrderList?page_size=" +
+					"/client/api/question/findPage?size=" +
 					this.pageSize +
-					"&index=" +
+					"&page=" +
 					this.filter_page+
-					"&keyword="+
-					this.select_word+
+					"&projectName="+
+					this.select_name+
 					"&status="+
-					this.select_cate
+					this.select_status+
+					"&sort=id,desc"
 				)
 				.then(res => {
 					console.log(res);
-					this.tableData = res.data.data.list;
-					this.totalNum = res.data.data.totalElements;
-					this.pageSize = res.data.data.pageSize;
+					var datas = [];
+					for (var key in this.questionStatus) {
+						for (var i = 0; i < res.data.content.length; i++) {
+								if (key == res.data.content[i].status) {
+									res.data.content[i].status = this.questionStatus[key];
+								}
+								if(res.data.content[i].status=="agree"||res.data.content[i].status=="absurd"||res.data.content[i].status=="finish"){
+									datas.push(res.data.content[i])
+								}
+							}
+						}
+					this.tableData = datas;
+					this.totalNum = res.data.totalElements;
+				})
+				.catch(function (error) {
+					that.$message.error('网络错误，获取数据失败');
 				});
-			
 			},
 		}
 	}
@@ -436,6 +379,15 @@
 	.el-upload--picture-card{
 		display: none !important;
 	}
-
+	.reward-item{
+		margin:20px 0px;
+		font-size: 16px;
+	}
+	.reward-item-user{
+		font-weight: bold
+	}
+	.reward-item-reward{
+		margin-left: 10px
+	}
 
 </style>

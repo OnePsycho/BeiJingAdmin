@@ -19,6 +19,10 @@
 					<el-option key="1" label="审核中" value="checkPending"></el-option>
 					<el-option key="2" label="正常" value="normal"></el-option>
 					<el-option key="3" label="未通过" value="refused"></el-option>
+					<el-option key="4" label="答题结束" value="complete"></el-option>
+					<el-option key="5" label="同意发放" value="agree"></el-option>
+					<el-option key="6" label="拒绝发放" value="absurd"></el-option>
+					<el-option key="7" label="已发放" value="finish"></el-option>
 				</el-select>
 				<el-input v-model="select_title" placeholder="问题标题" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-input v-model="select_project_name" placeholder="项目名称" class="handle-input mr10" @input="select_word_change"></el-input>
@@ -48,8 +52,8 @@
 				</el-table-column>
 				<el-table-column label="操作" align="center" width="300px">
 					<template slot-scope="scope">
-						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
-						<el-button type="success" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)">修改</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)" :disabled="scope.row.status != '审核中'">修改状态</el-button>
+						<el-button type="success" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)" :disabled="scope.row.status != '审核中'">修改</el-button>
 						<el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
@@ -283,7 +287,11 @@
 				questionStatus:{
 				'checkPending': '审核中',
 				'normal': '正常',
-				'refused': '未通过'
+				'refused': '未通过',
+				'complete': '答题结束',
+				'agree':'同意发放',
+				'absurd':'拒绝发放',
+				'finish':'已发放'
 				},
 				options: [{
 					id:99,
@@ -418,7 +426,7 @@
 								timePickerValue:[res.data.publishDate,res.data.finishDate],
 								description: res.data.content,
 								reward:res.data.reward,
-								joinNum:res.data.joinNum,
+								joinNum:res.data.joinMaxNum,
 								platformId:res.data.platformType.id,
 								platformTypeIds:res.data.platformTypeIds,
 								status:res.data.status,
@@ -601,7 +609,7 @@
 				f.append('id',this.currentId);
 				f.append('status',this.form.status);
 				f.append('_method','PUT');
-				this.$axios.post(this.apiUrl+'/client/api/question/update',f).then((res) => {
+				this.$axios.post(this.apiUrl+'/client/api/question/adminDealQuestion',f).then((res) => {
 					if(res.status == 200){
 						this.$message.success("修改成功!");
 						this.getData();
@@ -667,7 +675,7 @@
 					formData.append("content", this.formAdd.description);
 					formData.append("projectName", this.formAdd.project_name);
 					formData.append("reward", this.formAdd.reward);
-					formData.append("joinNum", this.formAdd.joinNum);
+					formData.append("joinMaxNum", this.formAdd.joinNum);
 					formData.append("status", this.formAdd.status);
 					formData.append("notice", this.formAdd.notice);
 					for (let index = 0; index < this.extraFileList.length; index++) {
@@ -710,7 +718,7 @@
 					formData.append("content", this.form.description);
 					formData.append("projectName", this.form.project_name);
 					formData.append("reward", this.form.reward);
-					formData.append("joinNum", this.form.joinNum);
+					formData.append("joinMaxNum", this.form.joinNum);
 					formData.append("status", this.form.status);
 					formData.append("notice", this.form.notice);
 					formData.append("_method", 'PUT');
@@ -722,7 +730,7 @@
 						formData.append("attachments", this.attachments[index]);
 					}
 					this.$axios
-					.post(this.apiUrl + "/client/api/question/update",formData)
+					.post(this.apiUrl + "/client/api/question/adminUpdate",formData)
 					.then(res => {
 						console.log(res);
 						if (res.status == 200) {

@@ -48,11 +48,11 @@ export default {
           index: "firstparty",
           title: "甲方管理"
         },
-        {
-          icon: "el-icon-tickets",
-          index: "pm",
-          title: "项目经理管理"
-        },
+        // {
+        //   icon: "el-icon-tickets",
+        //   index: "pm",
+        //   title: "项目经理管理"
+        // },
         {
           icon: "el-icon-tickets",
           index: "admin",

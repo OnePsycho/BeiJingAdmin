@@ -1,15 +1,15 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">积分商城后台管理系统</div>
+            <div class="ms-title">北京工业设计院后台管理系统</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                    <el-input v-model="ruleForm.username" placeholder="用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+                    <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
@@ -26,8 +26,8 @@
         data: function(){
             return {
                 ruleForm: {
-                    username: 'admin',
-                    password: '123123'
+                    username: '',
+                    password: ''
                 },
                 rules: {
                     username: [
@@ -36,22 +36,28 @@
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
                     ]
-                }
+                },
+                apiUrl:domain.apiUrl
             }
         },
         methods: {
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-// 						this.$axios.post('http://192.168.1.20/admin/loginProcess', {
-// 							username: this.ruleForm.username,
-// 							password: this.ruleForm.password
-// 						}).then((res) => {
-// 							console.log(res);
-// 							// this.tableData = res.data;
-// 						})
-                        localStorage.setItem('ms_username',this.ruleForm.username);
-                        this.$router.push('/');
+                        let f = new FormData();
+                        f.append('username',this.ruleForm.username);
+                        f.append('password',this.ruleForm.password);
+						this.$axios.post(this.apiUrl+'/admin/login',f).then((res) => {
+                            console.log(res);
+                            if(res.data.status == 200){
+                                this.$message.success("登录成功!");
+                                localStorage.setItem('ms_username',this.ruleForm.username);
+                                this.$router.push('/user');
+                            }else{
+                                 this.$message.error("登录失败!");
+                            }
+						})
+
                     } else {
                         console.log('error submit!!');
                         return false;
