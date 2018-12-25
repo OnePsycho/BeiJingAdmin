@@ -4,8 +4,8 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
-    base:'/beigong/',
+    // mode: 'history',
+    // base:'/beigong/',
     routes: [
         {
             path: '/',
