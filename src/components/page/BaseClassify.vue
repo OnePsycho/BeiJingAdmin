@@ -172,7 +172,7 @@ export default {
               value +
               "&pid=" +
               pId +
-              "&type"+
+              "&type="+
               pType
           )
           .then(res => {
