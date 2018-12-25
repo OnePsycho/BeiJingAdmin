@@ -36,7 +36,7 @@ global.domain = domain;
 router.beforeEach((to, from, next) => {
     const role = localStorage.getItem('ms_username');
     if(!role && to.path !== '/login'){
-        next('/user');
+        next('/login');
     }else{
         // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
         if(navigator.userAgent.indexOf('MSIE') > -1){
