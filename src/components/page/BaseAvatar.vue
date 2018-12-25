@@ -232,4 +232,7 @@
 		height: 100px;
 		display: block;
 	}
+	.el-upload-list__item-preview,.el-icon-zoom-in{
+		display: none;
+	}
 </style>
