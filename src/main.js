@@ -20,10 +20,11 @@ axios.interceptors.response.use((response) => {
     return response;
 }, function (error) {
     if (401 === error.response.status) {
-        router.push('/login');
         Vue.prototype.$alert('当前登录状态已过期，请重新登录', '过期通知', {
             confirmButtonText: '确定'
         });
+        router.push('/login');
+        
     } else {
         return Promise.reject(error);
     }

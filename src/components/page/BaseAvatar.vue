@@ -17,7 +17,6 @@
 				:auto-upload="true"
 				multiple
 				:file-list="imgList"
-				:on-preview="handlePictureCardPreview"
 				:before-upload="beforeAvatarUpload"
 				:http-request="uploadAvatar"
 				:on-remove="handleRemove">

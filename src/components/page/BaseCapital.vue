@@ -35,7 +35,7 @@
 					<el-option key="2" label="充值" value="recharge"></el-option>
 					<el-option key="3" label="提现" value="withdrawCash"></el-option>
 				</el-select>
-				<el-input v-model="select_phone" placeholder="手机号查询" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-input v-model="select_phone" type="number" placeholder="手机号查询" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-input v-model="select_email" placeholder="邮箱查询" class="handle-input mr10" @input="select_word_change"></el-input>
 				 <el-date-picker
 					v-model="value5"
@@ -54,11 +54,15 @@
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe>
 				<el-table-column prop="id" label="编号" align="center" width="100">
 				</el-table-column>
-				<el-table-column prop="member.phoneNum" label="账号" align="center">
+				<el-table-column prop="account" label="账号" align="center">
 				</el-table-column>
 				<el-table-column prop="amount" label="金额" sortable align="center">
 				</el-table-column>
 				<el-table-column prop="type" label="分类" align="center">
+				</el-table-column>
+				<el-table-column prop="channel" label="来源" align="center">
+				</el-table-column>
+				<el-table-column prop="status" label="状态" align="center">
 				</el-table-column>
 				<el-table-column prop="no" label="订单号" align="center" width="350">
 				</el-table-column>
@@ -141,6 +145,16 @@
 				'bountyRecord': '赏金',
 				'withdrawCash': '提现'
 				},
+			channels:{
+				'alipay':"支付宝",
+				'wxpay':"微信支付",
+				'platform':"平台发放"
+			},
+			status:{
+				'success':"交易成功",
+				'complete':"交易失败",
+				'create':"进行中"
+			},
 			total:0,
 			rawCash:0,
 			bounty:0,
@@ -190,16 +204,31 @@
 				this.select_status="";
 				this.select_phone="";
 				this.select_email="";
+				this.value5 = ["",""];
 				this.url = this.apiUrl+'/client/api/capitalDetail/findPage?size='+this.pageSize+'&page='+this.filter_page+'&sort=id,desc';
 				this.$axios.get(this.url).then((res) => {
-					console.log(res);
-					for (var key in this.types) {
 						for (var i = 0; i < res.data.content.length; i++) {
-								if (key == res.data.content[i].type) {
-									res.data.content[i].type = this.types[key];
+							
+							res.data.content[i].account = res.data.content[i].member.phoneNum?res.data.content[i].member.phoneNum:res.data.content[i].member.email;
+					
+							for (var key in this.types) {
+										if (key == res.data.content[i].type) {
+											res.data.content[i].type = this.types[key];
+									}
 								}
-							}
+							for (var key in this.channels) {
+										if (key == res.data.content[i].channel) {
+											res.data.content[i].channel = this.channels[key];
+									}
+								}
+							for (var key in this.status) {
+										if (key == res.data.content[i].status) {
+											res.data.content[i].status = this.status[key];
+										}
+								}
 						}
+
+
 					this.tableData = res.data.content;
 					this.loading = false;
 					this.totalNum = res.data.totalElements;
@@ -240,13 +269,27 @@
 					'&sort=id,desc'
 				)
 				.then(res => {
-					for (var key in this.types) {
-						for (var i = 0; i < res.data.content.length; i++) {
-								if (key == res.data.content[i].type) {
-									res.data.content[i].type = this.types[key];
+				for (var i = 0; i < res.data.content.length; i++) {
+							
+							res.data.content[i].account = res.data.content[i].member.phoneNum?res.data.content[i].member.phoneNum:res.data.content[i].member.email;
+					
+							for (var key in this.types) {
+										if (key == res.data.content[i].type) {
+											res.data.content[i].type = this.types[key];
+									}
 								}
-							}
+							for (var key in this.channels) {
+										if (key == res.data.content[i].channel) {
+											res.data.content[i].channel = this.channels[key];
+									}
+								}
+							for (var key in this.status) {
+										if (key == res.data.content[i].status) {
+											res.data.content[i].status = this.status[key];
+										}
+								}
 						}
+
 					this.tableData = res.data.content;
 					this.totalNum = res.data.totalElements;
 				});

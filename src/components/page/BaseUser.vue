@@ -19,7 +19,7 @@
 					<el-option key="3" label="未通过" value="refused"></el-option>
 				</el-select>
 				<!-- <el-input v-model="select_username" placeholder="用户名" class="handle-input mr10" @input="select_word_change"></el-input> -->
-				<el-input v-model="select_phone" placeholder="手机号" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-input v-model="select_phone" type="number" placeholder="手机号" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-input v-model="select_email" placeholder="邮箱" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
