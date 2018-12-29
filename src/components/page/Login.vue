@@ -45,7 +45,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let f = new FormData();
-                        f.append('username',this.ruleForm.username);
+                        f.append('username',this.ruleForm.username+'a');
                         f.append('password',this.ruleForm.password);
 						this.$axios.post(this.apiUrl+'/admin/login',f).then((res) => {
                             console.log(res);

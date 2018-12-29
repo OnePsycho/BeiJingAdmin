@@ -222,6 +222,7 @@
 				this.delVisible = true;
 			},
 			finishQuestion(){
+				let that = this;
 				let f = new FormData();
 				f.append('id',this.currentId);
 				f.append('status','finish');
@@ -231,7 +232,12 @@
 						this.getData();
 						this.finishVisible = false;
 					}
-				})
+				}).catch(function (error) {
+					if(error.response.data.message == "member asset lt reward"){
+						that.$message("甲方资产低于赏金！无法进行发放！");
+						that.finishVisible = false;
+					}
+				});
 			},
 			// 批量删除
 			delAll() {

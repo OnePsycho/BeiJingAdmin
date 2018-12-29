@@ -8,11 +8,6 @@
 		</div>
 		<div class="container">
 			<div class="handle-box">
-				<el-select v-model="select_type" placeholder="用户身份" class="handle-select mr10" @change="selectChange">
-					<el-option key="1" label="甲方" value="firstParty"></el-option>
-					<!-- <el-option key="2" label="研究院" value="designingInstitute"></el-option> -->
-					<el-option key="3" label="设计师" value="freeDesigner"></el-option>
-				</el-select>
 				<el-select v-model="select_status" placeholder="用户状态" class="handle-select mr10" @change="selectChange">
 					<el-option key="1" label="正常" value="normal"></el-option>
 					<el-option key="2" label="审核中" value="checkPending"></el-option>
@@ -528,7 +523,7 @@
 				this.$axios
 				.get(
 					this.apiUrl +
-					"/client/api/member/findPage?size=" +
+					"/client/api/member/findPage?type=freeDesigner&size=" +
 					this.pageSize +
 					"&page=" +
 					this.filter_page+
@@ -538,8 +533,6 @@
 					this.select_phone+
 					"&email="+
 					this.select_email+
-					"&type="+
-					this.select_type+
 					"&status="+
 					this.select_status
 				)
