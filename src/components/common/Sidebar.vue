@@ -23,7 +23,8 @@
                 </template>
                 <template v-else>
                     <el-menu-item :index="item.index" :key="item.index">
-                        <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                        <!-- <i :class="item.icon"></i><span slot="title">{{ item.title }}</span> -->
+                        <i class="iconfont" style="margin-right:8px">&#xe82b;</i><span slot="title">{{ item.title }}</span>
                     </el-menu-item>
                 </template>
             </template>
