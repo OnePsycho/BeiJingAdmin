@@ -307,6 +307,7 @@
 				this.url = this.apiUrl+'/client/api/member/findPage?type=freeDesigner';
 				this.$axios.get(this.url).then((res) => {
 					console.log(res);
+					
 					this.tableData = res.data.content;
 					for (var key in this.userStatus) {
 						for (var i = 0; i < res.data.content.length; i++) {

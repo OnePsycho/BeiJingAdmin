@@ -6,14 +6,14 @@
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="用户名">
                         <el-button slot="prepend">
-                            <i class="iconfont">&#xe620;</i>
+                            <i class="iconfont">&#xe600;</i>
                         </el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
                         <el-button slot="prepend">
-                            <i class="iconfont">&#xe60c;</i>
+                            <i class="iconfont" style="font-size:18px">&#xe688;</i>
                         </el-button>
                     </el-input>
                 </el-form-item>

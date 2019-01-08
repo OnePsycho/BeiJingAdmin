@@ -6,7 +6,7 @@
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
                         <template slot="title">
-                            <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                            <i class="iconfont" style="margin-right:8px" v-html="item.iconfont"></i><span slot="title">{{ item.title }}</span>
                         </template>
                         <template v-for="subItem in item.subs">
                             <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
@@ -24,7 +24,7 @@
                 <template v-else>
                     <el-menu-item :index="item.index" :key="item.index">
                         <!-- <i :class="item.icon"></i><span slot="title">{{ item.title }}</span> -->
-                        <i class="iconfont" style="margin-right:8px">&#xe82b;</i><span slot="title">{{ item.title }}</span>
+                        <i class="iconfont" style="margin-right:8px" v-html="item.iconfont"></i><span slot="title">{{ item.title }}</span>
                     </el-menu-item>
                 </template>
             </template>
@@ -41,12 +41,14 @@ export default {
       items: [
         {
           icon: "el-icon-tickets",
+          iconfont:"&#xe635;",
           index: "user",
           title: "设计师管理"
         },
          {
           icon: "el-icon-tickets",
           index: "firstparty",
+          iconfont:"&#xe600;",
           title: "甲方管理"
         },
         // {
@@ -57,34 +59,41 @@ export default {
         {
           icon: "el-icon-tickets",
           index: "admin",
+          iconfont:"&#xe640;",
           title: "管理员管理"
         },
         {
           icon: "el-icon-tickets",
           index: "classify",
+          iconfont:"&#xe6b0;",
           title: "分类管理"
         },
         {
           icon: "el-icon-tickets",
           index: "question",
+          iconfont:"&#xe6dd;",
           title: "问题管理"
         },
         {
           icon: "el-icon-tickets",
           index: "reward",
+          iconfont:"&#xe675;",
           title: "赏金管理"
         },
         {
           icon: "el-icon-tickets",
           index: "1",
+          iconfont:"&#xe6a3;",
           title: "个性管理",
           subs:[
             {
                 index: 'nickname',
+                iconfont:"&#xe667;",
                 title: '昵称管理'
             },
             {
                 index: 'avatar',
+                iconfont:"&#xe600;",
                 title: '头像管理'
             },
           ]
@@ -92,11 +101,13 @@ export default {
          {
           icon: "el-icon-tickets",
           index: "tag",
+          iconfont:"&#xe678;",
           title: "标签管理"
         },
          {
           icon: "el-icon-tickets",
           index: "capital",
+          iconfont:"&#xe669;",
           title: "资金管理"
         },
       ]
