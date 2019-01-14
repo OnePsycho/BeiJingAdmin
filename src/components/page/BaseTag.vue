@@ -12,10 +12,10 @@
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="addAction" style="margin-left: 0px;">新增</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
-				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
+				<!-- <el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button> -->
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55" align="center"></el-table-column>
+				<!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
 				<el-table-column prop="name" label="标签名称" align="center">
 				</el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center">
@@ -23,7 +23,7 @@
 				<el-table-column label="操作" align="center" width="200px">
 					<template slot-scope="scope">
 						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改</el-button>
-						<el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<!-- <el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button> -->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -127,7 +127,8 @@
 				this.currentId = id;
 				this.$prompt("请输入修改后的标签名称", "提示", {
 					confirmButtonText: "确定",
-					cancelButtonText: "取消"
+					cancelButtonText: "取消",
+					inputValue:row.name
 				}).then(({ value }) => {
 					let f = new FormData();
 					f.append("id", id);

@@ -16,11 +16,11 @@
 				<el-input v-model="select_name" placeholder="项目名称" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
-				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
+				<!-- <el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button> -->
 
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55" align="center"></el-table-column>
+				<!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
 				<el-table-column prop="title" label="问题标题"  align="center">
 				</el-table-column>
 				<el-table-column prop="projectName" label="所属项目"  align="center">
@@ -37,7 +37,7 @@
 					<template slot-scope="scope">
 						<el-button type="primary" icon="el-icon-tickets" @click="handleDetails(scope.row.id,scope.$index, scope.row)">查看赏金分布</el-button>
 						<el-button type="primary" icon="el-icon-tickets" @click="handleFinish(scope.row.id,scope.$index, scope.row)" :disabled="scope.row.status != '同意发放'">发放赏金</el-button>
-						<el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<!-- <el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button> -->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -310,14 +310,24 @@
 				this.filterDate();
 			},
 			filterDate() {
+				let aUrl;
+				let that = this;
+				
 				if(this.select_status==""&&this.select_name==""){
 					this.getData();
 					return;
-				}
-				let that = this;
-				this.$axios
-				.get(
-					this.apiUrl +
+				}else if(this.select_status==""&&this.select_name!=""){
+					aUrl = this.apiUrl +
+					"/client/api/question/findPage?size=" +
+					this.pageSize +
+					"&page=" +
+					this.filter_page+
+					"&projectName="+
+					this.select_name+
+					"&status=finish&status=agree&status=absurd"+
+					"&sort=id,desc"
+				}else if(this.select_status!=""&&this.select_name==""){
+					aUrl = this.apiUrl +
 					"/client/api/question/findPage?size=" +
 					this.pageSize +
 					"&page=" +
@@ -327,27 +337,37 @@
 					"&status="+
 					this.select_status+
 					"&sort=id,desc"
-				)
+				}else{
+					aUrl = this.apiUrl +
+					"/client/api/question/findPage?size=" +
+					this.pageSize +
+					"&page=" +
+					this.filter_page+
+					"&projectName="+
+					this.select_name+
+					"&status="+
+					this.select_status+
+					"&sort=id,desc"
+				}
+				this.$axios
+				.get(aUrl)
 				.then(res => {
 					console.log(res);
-					var datas = [];
 					for (var key in this.questionStatus) {
 						for (var i = 0; i < res.data.content.length; i++) {
 								if (key == res.data.content[i].status) {
 									res.data.content[i].status = this.questionStatus[key];
 								}
-								if(res.data.content[i].status=="agree"||res.data.content[i].status=="absurd"||res.data.content[i].status=="finish"){
-									datas.push(res.data.content[i])
-								}
 							}
 						}
-					this.tableData = datas;
+					this.tableData = res.data.content;
+					this.loading = false;
 					this.totalNum = res.data.totalElements;
 				})
 				.catch(function (error) {
 					that.$message.error('网络错误，获取数据失败');
 				});
-			},
+			}
 		}
 	}
 </script>

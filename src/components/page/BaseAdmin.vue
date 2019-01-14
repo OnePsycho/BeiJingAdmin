@@ -17,11 +17,11 @@
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="addAction" style="margin-left: 0px;">新增</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
-				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
+				<!-- <el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button> -->
 
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55" align="center"></el-table-column>
+				<!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
 				<el-table-column prop="id" label="编号"  align="center" width="80">
 				</el-table-column>
 				<el-table-column prop="name" label="姓名"  align="center">
@@ -34,8 +34,8 @@
 				</el-table-column>
 				<el-table-column label="操作" align="center" width="200px">
 					<template slot-scope="scope">
-						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
-						<el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)" :disabled="scope.row.username == username">修改状态</el-button>
+						<!-- <el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button> -->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -111,6 +111,7 @@ export default {
   data() {
     return {
       url: "",
+      username:localStorage.getItem('ms_username'),
       tableData: [],
       activeName: 1,
       cur_page: 1,

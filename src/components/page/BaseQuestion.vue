@@ -28,12 +28,14 @@
 				<el-input v-model="select_project_name" placeholder="项目名称" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
-				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
+				<!-- <el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button> -->
 				<!-- <el-button type="primary" icon="el-icon-delete" class="handle-del mr10" @click="addAction" style="margin-left: 0px;">发布问题</el-button> -->
 
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55" align="center"></el-table-column>
+				<!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
+				<el-table-column prop="id" label="问题编号"  align="center" width="80">
+				</el-table-column>
 				<el-table-column prop="title" label="问题标题"  align="center">
 				</el-table-column>
 				<el-table-column prop="platformType.name" label="问题分类"  align="center">
@@ -54,7 +56,7 @@
 					<template slot-scope="scope">
 						<el-button type="primary" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)" :disabled="scope.row.status != '审核中'">修改状态</el-button>
 						<el-button type="success" icon="el-icon-tickets" @click="handleEdit(scope.row.id,scope.$index, scope.row)" :disabled="scope.row.status != '审核中'">修改</el-button>
-						<el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button>
+						<!-- <el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button> -->
 					</template>
 				</el-table-column>
 			</el-table>

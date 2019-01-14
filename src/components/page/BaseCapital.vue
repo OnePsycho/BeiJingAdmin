@@ -42,7 +42,9 @@
 					type="datetimerange"
 					@input="select_word_change"
 					:picker-options="pickerOptions2"
+					@change="timeChange"
 					value-format="yyyy-MM-dd HH:mm:ss"
+					:default-time="['', '']"
 					range-separator="至"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
@@ -139,7 +141,7 @@
 				}
 				]
 			},
-			value5: ["",""],
+			value5: [],
 			types:{
 				'recharge': '充值',
 				'bountyRecord': '赏金',
@@ -167,7 +169,7 @@
 		components:{
 			// quillEditor
 		},
-		  watch: {
+		watch: {
 			//监听路由变化
 			$route(to) {
 			if (to.path == "/capital") {
@@ -197,14 +199,20 @@
 				this.filter_page = 1;
 				this.filterDate();
 			},
+			timeChange(){
+				if(!this.value5){
+					this.value5 = ["",""]
+				}
+			},
 
 			// 获取信息
 			getData() {
 				var that = this;
+				var cDate =  new Date();
 				this.select_status="";
 				this.select_phone="";
 				this.select_email="";
-				this.value5 = ["",""];
+				this.value5 = [];
 				this.url = this.apiUrl+'/client/api/capitalDetail/findPage?size='+this.pageSize+'&page='+this.filter_page+'&sort=id,desc';
 				this.$axios.get(this.url).then((res) => {
 						for (var i = 0; i < res.data.content.length; i++) {
@@ -248,8 +256,8 @@
 				this.filterDate();
 			},
 			filterDate() {
-				var timeRange = this.value5;
-				console.log(timeRange);
+				this.value5[0] = this.value5[0]?this.value5[0]:"";
+				this.value5[1] = this.value5[1]?this.value5[1]:"";
 				this.$axios.get(
 					this.apiUrl +
 					"/client/api/capitalDetail/findPage?size=" +

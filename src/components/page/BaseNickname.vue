@@ -8,7 +8,7 @@
 		</div>
 		<div class="container">
 			<div class="handle-box">
-				<el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10" @input="select_word_change"></el-input>
+				<el-input v-model="select_word" placeholder="筛选昵称" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="addAction" style="margin-left: 0px;">新增</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
