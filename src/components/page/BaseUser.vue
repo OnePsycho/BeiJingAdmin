@@ -18,11 +18,11 @@
 				<el-input v-model="select_email" placeholder="邮箱" class="handle-input mr10" @input="select_word_change"></el-input>
 				<el-button type="success" class="handle-del mr10" @click="filterDate">筛选</el-button>
 				<el-button type="primary" class="handle-del mr10" @click="getData">显示全部</el-button>
-				<el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button>
+				<!-- <el-button type="danger" icon="el-icon-delete" class="handle-del mr10" @click="delAll" style="margin-left: 0px;">批量删除</el-button> -->
 
 			</div>
 			<el-table :data="data" border class="table" v-loading="loading" ref="multipleTable" stripe @selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55" align="center"></el-table-column>
+				<!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
 				<el-table-column prop="id" label="编号"  align="center" width="80">
 				</el-table-column>
 				<el-table-column prop="phoneNum" label="手机号"  align="center" width="120">
@@ -38,10 +38,10 @@
 				<el-table-column label="操作" align="center" width="500px">
 					<template slot-scope="scope">
 						<el-button type="primary" icon="el-icon-tickets" @click="handleDetails(scope.row.id,scope.$index, scope.row)">查看详细</el-button>
-						<el-button type="primary" icon="el-icon-tickets" @click="handleProjects(scope.row.id,scope.$index, scope.row)">项目经验</el-button>
-						<el-button type="warning" icon="el-icon-tickets" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
+						<el-button type="primary" icon="el-icon-document" @click="handleProjects(scope.row.id,scope.$index, scope.row)">项目经验</el-button>
+						<el-button type="warning" icon="el-icon-edit-outline" @click="handleModify(scope.row.id,scope.$index, scope.row)">修改状态</el-button>
 						<!-- <el-button type="danger" icon="el-icon-tickets" @click="handleDelete(scope.row.id,scope.$index, scope.row)">删除</el-button> -->
-						<el-button type="success" icon="el-icon-delete" @click="handleFlag(scope.row.id,scope.$index, scope.row)">设置标签</el-button>
+						<el-button type="success" icon="el-icon-edit" @click="handleFlag(scope.row.id,scope.$index, scope.row)">设置标签</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -125,17 +125,18 @@
 		<!-- 修改状态弹出框 -->
 		<el-dialog title="修改状态" :visible.sync="modifyVisible" width="620px">
 			<el-form ref="form" :model="form" label-width="100px">
-				<el-form-item label="编号" prop="product_category_name">
+				<el-form-item label="编号" prop="id">
 					<div class="form-label">{{form.id}}</div>
 				</el-form-item>
-				<el-form-item label="用户名" prop="product_category_name">
+				<!-- <el-form-item label="用户名" prop="product_category_name">
 					<div class="form-label">{{form.username}}</div>
-				</el-form-item>
+				</el-form-item> -->
 				<el-form-item label="修改状态" prop="status">
 					<el-select v-model="form.status" placeholder="请选择">
 					<el-option key="1" label="审核中" value="checkPending"></el-option>
 					<el-option key="2" label="正常" value="normal"></el-option>
 					<el-option key="3" label="未通过" value="refused"></el-option>
+					<el-option key="3" label="禁用" value="disabled"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
@@ -245,7 +246,8 @@
 				userStatus:{
 				'checkPending': '审核中',
 				'normal': '正常',
-				'refused': '未通过'
+				'refused': '未通过',
+				'disabled':'禁用'
 				},
 				userTypes:{
 				'designingInstitute': '研究院',
@@ -394,7 +396,6 @@
 					if(res.status==200){
 						this.$nextTick(function(){
 							this.form = {
-								username:res.data.memberExt.u_name,
 								type:res.data.type,
 								status:res.data.status,
 								id:res.data.id
