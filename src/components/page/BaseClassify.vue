@@ -202,8 +202,12 @@ export default {
       this.$axios
         .post(this.apiUrl + "/client/api/personnelType/deleteById", f)
         .then(res => {
-          children.splice(index, 1);
-          this.$message.success("删除成功！");
+          if(res.status=="1001"){
+            this.$message.warn("该分类已被使用，无法删除！");
+          }else{
+           children.splice(index, 1);
+           this.$message.success("删除成功！");
+          }
         });
     },
     //修改分类名称
